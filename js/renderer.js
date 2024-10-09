@@ -22,7 +22,7 @@ setInterval(() => {
     try {
         if (application.results.length > 0) {
             for (let result of application.results) {
-                matchBox.innerHTML += `<p>id: ${result.id}</p> <p>attr_count: ${result.attr_count}</p> <p>link: ${result.link}</p> <p>threat_level_id: ${result.threat_level_id}</p>`;
+                matchBox.innerHTML += `<p class="has-text-link-light">match: ${result.value}</p><p class="has-text-link-light">id: ${result.id}</p> <p class="has-text-link-light">attr_count: ${result.attr_count}</p> <p class="has-text-link-light">link: ${result.link}</p> <p class="has-text-link-light">threat_level_id: ${result.threat_level_id}</p>`;
             }
             application.results = [];
         }
