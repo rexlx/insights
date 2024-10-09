@@ -18,11 +18,17 @@ async function checkErrors() {
     }
 }
 setInterval(() => {
+    `<span class="has-text-primary"> </span>`
     checkErrors();
     try {
         if (application.results.length > 0) {
+            matchBox.innerHTML = "";
             for (let result of application.results) {
-                matchBox.innerHTML += `<p class="has-text-link-light">match: ${result.value}</p><p class="has-text-link-light">id: ${result.id}</p> <p class="has-text-link-light">attr_count: ${result.attr_count}</p> <p class="has-text-link-light">link: ${result.link}</p> <p class="has-text-link-light">threat_level_id: ${result.threat_level_id}</p>`;
+                matchBox.innerHTML += `<p class="has-text-link-light">match: <span class="has-text-primary">${result.value}</span></p>
+                <p class="has-text-info-light">id: <span class="has-text-primary">${result.id}</span></p>
+                <p class="has-text-info-light">attr_count: <span class="has-text-primary">${result.attr_count}</span></p>
+                <p class="has-text-info-light">link: <span class="has-text-primary">${result.link}</span></p>
+                <p class="has-text-info-light">threat_level_id: <span class="has-text-primary">${result.threat_level_id}</span></p>`;
             }
             application.results = [];
         }
