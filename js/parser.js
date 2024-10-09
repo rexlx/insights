@@ -27,20 +27,22 @@ class Contextualizer {
   }
 }
 
-let contextualizer = new Contextualizer();
-const data = `
-This is some random text with an MD5 hash: 
-a1d0c6e83f027327d8461063f4ac58a6. 
+// let contextualizer = new Contextualizer();
+// const data = `
+// This is some random text with an MD5 hash: 
+// a1d0c6e83f027327d8461063f4ac58a6. 
 
-It's just hanging out here, 
-waiting to be found. 
+// It's just hanging out here, 
+// waiting to be found. 
 
-Oh, and here's another one: 
-8f14e45fceea167a5a36dedd4bea2543. 
+// Oh, and here's another one: 
+// 8f14e45fceea167a5a36dedd4bea2543. 
 
-Just a couple of MD5s in the wild. 
-Carry on... nothing to see here. 
-`;
+// Just a couple of MD5s in the wild. 
+// Carry on... nothing to see here. 
+// `;
 
-let matches = contextualizer.getMatches(data, contextualizer.expressions.md5);
-console.log(matches);
+// let matches = contextualizer.getMatches(data, contextualizer.expressions.md5);
+// console.log(matches);
+
+export default Contextualizer;

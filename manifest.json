@@ -3,6 +3,12 @@
     "name": "insights",
     "description": "i provide insights",
     "version": "1.0",
+    "permissions": [
+        "activeTab",  
+        "storage",     
+        "https://192.168.1.100/*",  
+        "https://my.hostname.com/*" 
+  ],
     "action": {
       "default_popup": "index.html",
       "default_icon": "Icon.png"
