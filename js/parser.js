@@ -1,4 +1,4 @@
-class Contextualizer {
+export class Contextualizer {
   constructor() {
     this.expressions = {
         "md5": /([a-fA-F\d]{32})/g,
@@ -45,4 +45,4 @@ class Contextualizer {
 // let matches = contextualizer.getMatches(data, contextualizer.expressions.md5);
 // console.log(matches);
 
-export default Contextualizer;
+// export default Contextualizer;

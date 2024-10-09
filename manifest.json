@@ -5,9 +5,16 @@
     "version": "1.0",
     "permissions": [
         "activeTab",  
-        "storage",     
-        "https://192.168.1.100/*",  
-        "https://my.hostname.com/*" 
+        "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:8080/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"], 
+      "js": ["js/app.js", "js/parser.js", "js/renderer.js"]
+    }
   ],
     "action": {
       "default_popup": "index.html",
