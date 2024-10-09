@@ -18,6 +18,7 @@ async function checkErrors() {
     }
 }
 
+
 setInterval(() => {
     checkErrors();
     try {
@@ -30,6 +31,18 @@ setInterval(() => {
         console.log(error); 
     }
 }, 6000);
+
+function handleMatchBox() {
+    try {
+        if (application.results.length > 0) {
+            for (let result of application.results) {
+                matchBox.innerHTML += `<p>${result}</p>`;
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 searchButton.addEventListener("click", async () => {
     const allMatches = [];
@@ -44,9 +57,10 @@ searchButton.addEventListener("click", async () => {
     for (let matchPair of allMatches) {
         for (let match of matchPair.matches) {
             let response = await application.fetchMatch("misp", match, matchPair.type);
-            console.log(response);
         }
     }
+    handleMatchBox();
+    console.log("YO", allMatches);
 }
 );
 

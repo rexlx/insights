@@ -33,7 +33,7 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
-        return data;
+        this.results.push(data);
     }
     async fetchMatch(to, match, type) {
         const proxyRequest = {
