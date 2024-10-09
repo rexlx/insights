@@ -17,34 +17,23 @@ async function checkErrors() {
         }
     }
 }
-
-
 setInterval(() => {
     checkErrors();
     try {
         if (application.results.length > 0) {
             for (let result of application.results) {
-                matchBox.innerHTML += `<p>${result}</p>`;
+                matchBox.innerHTML += `<p>id: ${result.id}</p> <p>attr_count: ${result.attr_count}</p> <p>link: ${result.link}</p> <p>threat_level_id: ${result.threat_level_id}</p>`;
             }
+            application.results = [];
         }
     } catch (error) {
         console.log(error); 
     }
 }, 6000);
 
-function handleMatchBox() {
-    try {
-        if (application.results.length > 0) {
-            for (let result of application.results) {
-                matchBox.innerHTML += `<p>${result}</p>`;
-            }
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 searchButton.addEventListener("click", async () => {
+    matchBox.innerHTML = "<p>parsed text...searching...</p>";
+    matchBox.innerHTML += `<progress class="progress is-primary" max="100"></progress>`
     const allMatches = [];
     for (let key in contextualizer.expressions) {
         let matches = contextualizer.getMatches(userSearch.value, contextualizer.expressions[key]);
@@ -54,13 +43,19 @@ searchButton.addEventListener("click", async () => {
         }
         allMatches.push(matchPair);
     }
+    
     for (let matchPair of allMatches) {
         for (let match of matchPair.matches) {
-            let response = await application.fetchMatch("misp", match, matchPair.type);
+            try {
+                let res = await application.fetchMatch("misp", match, matchPair.type);
+                application.results.push(res);
+            } catch (error) {
+                application.errors.push(error);
+                // continue;
+            }
         }
     }
-    handleMatchBox();
-    console.log("YO", allMatches);
+    // handleMatchBox();
 }
 );
 

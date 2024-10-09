@@ -51,6 +51,6 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
-        this.results.push(data);
+        return data;
     }
 }

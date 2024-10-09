@@ -10,7 +10,6 @@ export class Contextualizer {
         "email": /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
         "url": /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/g,
         "domain": /([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-        "hostname": /([a-zA-Z0-9.-]+)/g,
         "filepath": /([a-zA-Z0-9.-]+\/[a-zA-Z0-9.-]+)/g,
         "filename": /([a-zA-Z0-9.-]+)\.([a-zA-Z0-9.-]+)/g,
     };
