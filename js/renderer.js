@@ -23,7 +23,7 @@ setInterval(() => {
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
-                matchBox.innerHTML += `<p class="has-text-link-light">match: <span class="has-text-primary">${result.value}</span></p>
+                matchBox.innerHTML += `<p class="has-text-info-light">match: <span class="has-text-primary">${result.value}</span></p>
                 <p class="has-text-info-light">id: <span class="has-text-primary">${result.id}</span></p>
                 <p class="has-text-info-light">attr_count: <span class="has-text-primary">${result.attr_count}</span></p>
                 <p class="has-text-info-light">link: <span class="has-text-primary">${result.link}</span></p>
@@ -57,6 +57,7 @@ searchButton.addEventListener("click", async () => {
     const allMatches = [];
     for (let key in contextualizer.expressions) {
         let matches = contextualizer.getMatches(userSearch.value, contextualizer.expressions[key]);
+        matches = removeDupsWithSet(matches);
         let matchPair = {
             "type": key,
             "matches": matches
@@ -78,5 +79,7 @@ searchButton.addEventListener("click", async () => {
 }
 );
 
-
-
+function removeDupsWithSet(arr) {
+    let unique = new Set(arr);
+    return [...unique];
+}
