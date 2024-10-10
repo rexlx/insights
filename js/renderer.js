@@ -18,6 +18,7 @@ async function checkErrors() {
     }
 }
 setInterval(() => {
+    `<span class="has-text-primary"> </span>`
     checkErrors();
     try {
         if (application.results.length > 0) {
@@ -29,27 +30,12 @@ setInterval(() => {
                 <p class="has-text-info-light">link: <span class="has-text-primary">${result.link}</span></p>
                 <p class="has-text-info-light">threat_level_id: <span class="has-text-primary">${result.threat_level_id}</span></p>`;
             }
-            if (application.resultWorkers.length === 0) {
-                application.results = [];
-            }
+            application.results = [];
         }
     } catch (error) {
         console.log(error); 
     }
 }, 6000);
-
-async function handleMatches(kind, matchPair) {
-    application.resultWorkers.push(1);
-    for (let match of matchPair.matches) {
-        try {
-            let result = await application.fetchMatch(kind, match, matchPair.type);
-            application.results.push(result);
-        } catch (error) {
-            application.errors.push(error);
-        }
-    }
-    application.resultWorkers.pop();
-}
 
 searchButton.addEventListener("click", async () => {
     matchBox.innerHTML = "<p>parsed text...searching...</p>";
@@ -64,11 +50,14 @@ searchButton.addEventListener("click", async () => {
         allMatches.push(matchPair);
     }
     
-    for (let svr of application.servers) {
-        for (let matchPair of allMatches) {
-            if (svr.type.includes(matchPair.type)) {
-                // we may not want to await here if we want to run all the matchers concurrently
-                handleMatches(svr.kind, matchPair);
+    for (let matchPair of allMatches) {
+        for (let match of matchPair.matches) {
+            try {
+                let res = await application.fetchMatch("misp", match, matchPair.type);
+                application.results.push(res);
+            } catch (error) {
+                application.errors.push(error);
+                // continue;
             }
         }
     }
