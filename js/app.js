@@ -1,10 +1,17 @@
 export class Application {
     constructor(apiUrl, apiKey) {
+        this.resultWorkers = [];
         this.results = [];
         this.errors = [];
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
-        this.SampleData = `
+        this.servers = [
+            {
+                "kind": "misp",
+                "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
+            }
+        ];
+        this.sampleData = `
         This is some random text with an MD5 hash: 
         a1d0c6e83f027327d8461063f4ac58a6. 
         

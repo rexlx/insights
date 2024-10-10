@@ -11,7 +11,7 @@ export class Contextualizer {
         "url": /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/g,
         "domain": /([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
         "filepath": /([a-zA-Z0-9.-]+\/[a-zA-Z0-9.-]+)/g,
-        "filename": /([a-zA-Z0-9.-]+)\.([a-zA-Z0-9.-]+)/g,
+        "filename": /^[\w\-. ]+\.[\w]{2,4}$/g,
     };
     this.context = [];
   }
