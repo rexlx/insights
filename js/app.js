@@ -1,5 +1,10 @@
 export class Application {
     constructor(apiUrl, apiKey) {
+        this.user = {
+            "email": "rxlx@nullferatu.com",
+            "key": "N0jwxsJjJ9KU0lyN74eFohM46yvIh5mqIAvqcq/c5Xw=",
+            "admin": false
+        };
         this.resultWorkers = [];
         this.results = [];
         this.errors = [];
@@ -12,17 +17,6 @@ export class Application {
             }
         ];
         this.sampleData = `
-        This is some random text with an MD5 hash: 
-        a1d0c6e83f027327d8461063f4ac58a6. 
-        
-        It's just hanging out here, 
-        waiting to be found. 
-        
-        Oh, and here's another one: 
-        8f14e45fceea167a5a36dedd4bea2543. 
-        
-        Just a couple of MD5s in the wild. 
-        Carry on... nothing to see here. 
         `
     }
     async fetchMatches(to, matches, type) {
@@ -35,7 +29,7 @@ export class Application {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
+                'Authorization': `${this.user.email}:${this.user.key}`
             },
             body: JSON.stringify(proxyRequest)
         });
@@ -53,7 +47,7 @@ export class Application {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
+                'Authorization': `${this.user.email}:${this.user.key}`
             },
             body: JSON.stringify(proxyRequest)
         });

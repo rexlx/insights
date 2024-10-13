@@ -8,7 +8,7 @@ let contextualizer = new Contextualizer();
 const matchBox = document.getElementById("matchBox");
 const userSearch = document.getElementById("userSearch");
 const searchButton = document.getElementById("searchButton");
-// let matches = contextualizer.getMatches(data, contextualizer.expressions.md5);
+// const menuLinks = document.querySelectorAll('.menu-list a');
 
 async function checkErrors() {
     if (application.errors.length > 0) {
@@ -17,17 +17,27 @@ async function checkErrors() {
         }
     }
 }
+
+
 setInterval(() => {
     checkErrors();
     try {
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
-                matchBox.innerHTML += `<p class="has-text-info-light">match: <span class="has-text-primary">${result.value}</span></p>
-                <p class="has-text-info-light">id: <span class="has-text-primary">${result.id}</span></p>
-                <p class="has-text-info-light">attr_count: <span class="has-text-primary">${result.attr_count}</span></p>
-                <p class="has-text-info-light">link: <span class="has-text-primary">${result.link}</span></p>
-                <p class="has-text-info-light">threat_level_id: <span class="has-text-primary">${result.threat_level_id}</span></p>`;
+                matchBox.innerHTML += `<article class="message is-dark">
+                <div class="message-header ${result.background}">
+                    <p>${result.from}</p>
+                    <button class="delete" aria-label="delete"></button>
+                    </div>
+                    <div class="message-body has-background-dark-ter">
+                    <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
+                    <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
+                    <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
+                    <p class="has-text-white">link: <span class="has-text-white">${result.link}</span></p>
+                    <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
+                    </div>
+                    </article>`;
             }
             if (application.resultWorkers.length === 0) {
                 application.results = [];
@@ -36,7 +46,7 @@ setInterval(() => {
     } catch (error) {
         console.log(error); 
     }
-}, 6000);
+}, 3300);
 
 async function handleMatches(kind, matchPair) {
     application.resultWorkers.push(1);
@@ -51,6 +61,12 @@ async function handleMatches(kind, matchPair) {
     application.resultWorkers.pop();
 }
 
+// menuLinks.forEach(link => {
+//     link.addEventListener("click", () => {
+//         seatActiveLink(link);
+//     });
+// });
+
 searchButton.addEventListener("click", async () => {
     matchBox.innerHTML = "<p>parsed text...searching...</p>";
     matchBox.innerHTML += `<progress class="progress is-primary" max="100"></progress>`
@@ -63,19 +79,15 @@ searchButton.addEventListener("click", async () => {
             "matches": matches
         }
         allMatches.push(matchPair);
-        // matchBox.innerHTML += `<p class="has-text-info-light">matches for ${key}: <span class="has-text-primary">${matches.length}</span></p>`;
     }
-    // matchBox.innerHTML += `<p class="has-text-info-light">total matches: <span class="has-text-primary">${allMatches.length}</span></p>`;
     
     for (let svr of application.servers) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
-                // we may not want to await here if we want to run all the matchers concurrently
                 handleMatches(svr.kind, matchPair);
             }
         }
     }
-    // handleMatchBox();
 }
 );
 
@@ -83,3 +95,10 @@ function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
 }
+
+// function seatActiveLink(link) {
+//     menuLinks.forEach(l => {
+//         l.classList.remove("is-active");
+//     });
+//     link.classList.add("is-active");
+// }
