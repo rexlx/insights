@@ -17,6 +17,24 @@ loginScreen.style.display = "block";
 mainSection.style.display = "none";
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
+document.addEventListener("DOMContentLoaded", async () => {
+    chrome.storage.local.get(["user"], (result) => {
+        if (result.user) {
+            application.user = result.user;
+        }
+    });
+    // chrome.storage.local.get(["servers"], (result) => {
+    //     if (result.servers) {
+    //         application.servers = result.servers;
+    //     }
+    // });
+    // chrome.storage.local.get(["expressions"], (result) => {
+    //     if (result.expressions) {
+    //         contextualizer.expressions = result.expressions;
+    //     }
+    // });
+});
+
 function checkUser() {
     // matchBox.innerHTML = `<p class="has-text-warning">Please login to continue ${application.user.key}</p>`;
     if (!application.user.key || application.user.key === "") {
