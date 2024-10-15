@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bulma.min.css">
+    <!-- <script href="js/renderer.js"></script> -->
+    <title>insights</title>
+</head>
+<body>
+    <section class="section has-background-black" id="mainSection">
+        <div class="columns" id="mainColumns">
+            <div class="column is-one-quarter">
+                <aside class="menu">
+                    <p class="menu-label">
+                        menu
+                    </p>
+                    <ul class="menu-list">
+                        <li><a href="" class="has-text-link has-background-dark" id="menuSearch">Search</a></li>
+                        <li><a href="" class="has-text-link has-background-dark" id="menuAdd">Add</a></li>
+                        <li><a href="" class="has-text-link has-background-dark" id="menuView">View</a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="column is-three-quarters">
+                <div class="box has-background-dark" id="matchBox">
+                    <h1 class="title">insights</h1>
+                    <form action="">
+                        <div class="field">
+                            <!-- <label class="label">Search</label> -->
+                            <div class="control">
+                                <textarea class="textarea" placeholder="feed me" id="userSearch"></textarea>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-primary" id="searchButton">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</body>
+<script type="module" src="js/renderer.js"></script>
+</html>
