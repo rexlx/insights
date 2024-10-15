@@ -8,7 +8,8 @@
         "storage"
   ],
   "host_permissions": [
-    "http://localhost:8080/"
+    "http://localhost:8080/",
+    "http://dreadco:8080/"
   ],
   "content_scripts": [
     {

@@ -1,14 +1,33 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://localhost:8080/pipe";
+const apiUrl = "http://dreadco:8080/pipe";
 const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
 let contextualizer = new Contextualizer();
 
 const matchBox = document.getElementById("matchBox");
+const mainSection = document.getElementById("mainSection");
 const userSearch = document.getElementById("userSearch");
 const searchButton = document.getElementById("searchButton");
+const loginScreen = document.getElementById("loginScreen");
+const loginButton = document.getElementById("loginButton");
+const userEmail = document.getElementById("userEmail");
+const userKey = document.getElementById("userKey");
+loginScreen.style.display = "block";
+mainSection.style.display = "none";
 // const menuLinks = document.querySelectorAll('.menu-list a');
+
+function checkUser() {
+    // matchBox.innerHTML = `<p class="has-text-warning">Please login to continue ${application.user.key}</p>`;
+    if (!application.user.key || application.user.key === "") {
+        loginScreen.style.display = "block";
+        mainSection.style.display = "none";
+    } else {
+        loginScreen.style.display = "none";
+        mainSection.style.display = "block";
+    }
+}
+checkUser();
 
 async function checkErrors() {
     if (application.errors.length > 0) {
@@ -20,6 +39,7 @@ async function checkErrors() {
 
 
 setInterval(() => {
+    // checkUser();
     checkErrors();
     try {
         if (application.results.length > 0) {
@@ -90,6 +110,15 @@ searchButton.addEventListener("click", async () => {
     }
 }
 );
+
+loginButton.addEventListener("click", () => {
+    application.user.email = userEmail.value;
+    application.user.key = userKey.value
+    chrome.storage.local.set({ "user": application.user }, () => {
+        console.log("user saved");
+    });
+    checkUser();
+});
 
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);

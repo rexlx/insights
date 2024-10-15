@@ -2,7 +2,7 @@ export class Application {
     constructor(apiUrl, apiKey) {
         this.user = {
             "email": "rxlx@nullferatu.com",
-            "key": "N0jwxsJjJ9KU0lyN74eFohM46yvIh5mqIAvqcq/c5Xw=",
+            "key": "/J2slNzojABfAlgpHrc3w0M/PQP2VkSt2UiE5UZ93+Q=",
             "admin": false
         };
         this.resultWorkers = [];
