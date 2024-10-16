@@ -13,39 +13,30 @@ const loginScreen = document.getElementById("loginScreen");
 const loginButton = document.getElementById("loginButton");
 const userEmail = document.getElementById("userEmail");
 const userKey = document.getElementById("userKey");
-loginScreen.style.display = "block";
-mainSection.style.display = "none";
+const loginInfo = document.getElementById("loginInfo");
+const menuProfile = document.getElementById("menuProfile");
+const editUserEmail = document.getElementById("editUserEmail");
+const editUserKey = document.getElementById("editUserKey");
+const profileView = document.getElementById("profileView");
+const updateUserButton = document.getElementById("updateUserButton");
+
+loginScreen.style.display = "none";
+mainSection.style.display = "block";
+profileView.style.display = "none";
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
-document.addEventListener("DOMContentLoaded", async () => {
-    chrome.storage.local.get(["user"], (result) => {
-        if (result.user) {
-            application.user = result.user;
-        }
-    });
-    // chrome.storage.local.get(["servers"], (result) => {
-    //     if (result.servers) {
-    //         application.servers = result.servers;
-    //     }
-    // });
-    // chrome.storage.local.get(["expressions"], (result) => {
-    //     if (result.expressions) {
-    //         contextualizer.expressions = result.expressions;
-    //     }
-    // });
-});
-
 function checkUser() {
-    // matchBox.innerHTML = `<p class="has-text-warning">Please login to continue ${application.user.key}</p>`;
-    if (!application.user.key || application.user.key === "") {
+    matchBox.innerHTML = `<p class="has-text-info">logged in as ${application.user.email}</p>`;
+    if (application.user.key === "") {
         loginScreen.style.display = "block";
         mainSection.style.display = "none";
+        profileView.style.display = "none";
     } else {
         loginScreen.style.display = "none";
         mainSection.style.display = "block";
+        profileView.style.display = "none";
     }
 }
-checkUser();
 
 async function checkErrors() {
     if (application.errors.length > 0) {
@@ -99,11 +90,19 @@ async function handleMatches(kind, matchPair) {
     application.resultWorkers.pop();
 }
 
-// menuLinks.forEach(link => {
-//     link.addEventListener("click", () => {
-//         seatActiveLink(link);
-//     });
-// });
+
+menuProfile.addEventListener("click", (e) => {
+    e.preventDefault();
+    editUserEmail.value = application.user.email;
+    editUserKey.value = application.user.key;
+    loginScreen.style.display = "none";
+    mainSection.style.display = "none";
+    profileView.style.display = "block";
+    updateUserButton.addEventListener("click", () => {
+        application.setUserData(editUserEmail.value, editUserKey.value);
+        checkUser();
+    });
+});
 
 searchButton.addEventListener("click", async () => {
     matchBox.innerHTML = "<p>parsed text...searching...</p>";

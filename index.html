@@ -46,7 +46,7 @@
                         <li><a href="" class="has-text-info has-background-black-ter is-active"
                                 id="menuSearch">search</a></li>
                         <li><a href="" class="has-text-info has-background-black-ter" id="menuAdd">add</a></li>
-                        <li><a href="" class="has-text-info has-background-black-ter" id="menuView">view</a></li>
+                        <li><a href="" class="has-text-info has-background-black-ter" id="menuProfile">profile</a></li>
                     </ul>
                 </aside>
             </div>
@@ -70,6 +70,45 @@
 
             </div>
         </div>
+    </section>
+    <section class="section" id="profileView">
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <aside class="menu">
+                    <p class="menu-label" id="profileMenu">
+                        menu
+                    </p>
+                    <ul class="menu-list">
+                        <li><a class="has-text-info has-background-black-ter" id="menuSearch">search</a></li>
+                        <li><a class="has-text-info has-background-black-ter" id="menuAdd">add</a></li>
+                        <li><a class="has-text-info has-background-black-ter is-active" id="menuProfile">profile</a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="column is-three-quarters">
+                <div class="box has-background-black-ter" id="profileBox">
+                    <h1 class="title">profile</h1>
+                    <form>
+                        <div class="field">
+                            <label class="label">email</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="email" id="editUserEmail">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">password</label>
+                            <div class="control">
+                                <input class="input" type="password" placeholder="password" id="editUserKey">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-info is-dark" id="updateUserButton">update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
     </section>
 </body>
 <script type="module" src="js/renderer.js"></script>
