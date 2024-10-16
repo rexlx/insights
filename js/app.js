@@ -1,10 +1,16 @@
 export class Application {
     constructor(apiUrl, apiKey) {
         this.user = {
-            "email": "rxlx@nullferatu.com",
-            "key": "/J2slNzojABfAlgpHrc3w0M/PQP2VkSt2UiE5UZ93+Q=",
+            "email": "",
+            "key": "",
             "admin": false
         };
+        chrome.storage.local.get(["user"], (result) => {
+            if (result.user) {
+                let x = result.user;
+                this.setUserData(x.email, x.key);
+            }
+        });
         this.resultWorkers = [];
         this.results = [];
         this.errors = [];
@@ -18,6 +24,13 @@ export class Application {
         ];
         this.sampleData = `
         `
+    }
+    setUserData(email, key) {
+        this.user.email = email;
+        this.user.key = key;
+        chrome.storage.local.set({ "user": this.user }, () => {
+            console.log("User data saved");
+        });
     }
     async fetchMatches(to, matches, type) {
         const proxyRequest = {
