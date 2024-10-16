@@ -1,3 +1,9 @@
 .menu-list a.is-active {
     background-color: aquamarine;
   }
+
+/*Change links on hover*/
+.navbar-item:hover{
+  background-color: rgba(112, 112, 112, 0.24) !important;
+}
+
