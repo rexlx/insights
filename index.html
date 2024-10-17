@@ -11,7 +11,8 @@
 </head>
 
 <body>
-    <section class="section has-background-black" id="loginScreen">
+   
+    <section class="section has-background-black-ter" id="loginScreen">
         <h1 class="title has-text-primary has-text-centered" id="extTitle">Insights</h1>
         <div class="field">
             <label class="label has-text-primary">email</label>
@@ -27,7 +28,7 @@
                 <input class="input" type="text" placeholder="key" id="userKey">
             </div>
         </div>
-        <!-- Need to fix erro below-->
+        <!-- Need to fix error below-->
         <!-- <p class="help is-danger" id="usernameError" style="display: none;">Username or Password is incorrect</p>     -->
         <div class="field">
             <div class="control">
@@ -36,87 +37,77 @@
         </div>
     </section>
     <section class="section has-background-black-ter" id="mainSection">
-        <div class="columns" id="mainColumns">
-            <div class="column is-one-quarter">
-                <aside class="menu">
-                    <p class="menu-label">
-                        menu
-                    </p>
-                    <ul class="menu-list">
-                        <li><a href="" class="has-text-info has-background-black-ter is-active"
-                                id="menuSearch">search</a></li>
-                        <li><a href="" class="has-text-info has-background-black-ter" id="menuServices">services</a></li>
-                        <li><a href="" class="has-text-info has-background-black-ter" id="menuProfile">profile</a></li>
-                    </ul>
-                </aside>
-            </div>
-            <div class="column is-three-quarters">
-                <div class="box has-background-black-ter" id="matchBox">
-                    <h1 class="title">insights</h1>
-                    <form action="">
-                        <div class="field">
-                            <!-- <label class="label">Search</label> -->
-                            <div class="control">
-                                <textarea class="textarea" placeholder="feed me" id="userSearch"></textarea>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-info is-dark" id="searchButton">search</button>
-                            </div>
-                        </div>
-                    </form>
+        <!-- Title -->
+        <!-- <aside class="menu"> -->
+            <nav class="level is-mobile">
+                <div class="level-item" style="flex:none">
+                   <h1 class="title has-text-primary">Insights</h1>
                 </div>
+                <div>
+                    
+                </div>
+                <div class="level-item"style="flex:none">
+                 <!-- Hamburger Menu -->
+                  <div>
+                    <a role="button" class="navbar-burger has-text-primary is-pulled-right" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="burger">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a> 
+                  </div>
+                </div>
+              </nav>
+            </div>
+
+            
+        <!-- </aside> -->
+       
+    <br/>
+        <div class="navbar-menu" id = "nav-links">
+            <div>
+                <a href="#" class="navbar-item has-text-primary has-background-black-ter is-active" id="menuSearch">search</a>
+                <a href="#" class="navbar-item has-text-primary has-background-black-ter " id="menuAdd">add</a>
+                <a href="#" class="navbar-item has-text-primary  has-background-black-ter " id="menuView">view</a>
 
             </div>
+
         </div>
-    </section>
-    <section class="section" id="profileView">
-        <div class="columns">
-            <div class="column is-one-quarter">
-                <aside class="menu">
-                    <p class="menu-label" id="profileMenu">
-                        menu
-                    </p>
-                    <ul class="menu-list">
-                        <li><a class="has-text-info has-background-black-ter" id="menuSearch">search</a></li>
-                        <li><a class="has-text-info has-background-black-ter" id="menuServices">add</a></li>
-                        <li><a class="has-text-info has-background-black-ter is-active" id="menuProfile">profile</a></li>
-                    </ul>
-                </aside>
+        <div class="columns" id="mainColumns">
+            <div class="column">
+              
+                <form action="">
+                    <div class="field">
+                        <!-- <label class="label">Search</label> -->
+                        <div class="control box has-background-black-ter box-shadow" id="searchBox">
+                            <h3 class="title has-text-primary">Search</h3>
+                            <textarea class="textarea" placeholder="feed me" id="userSearch"></textarea>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary is-pulled-right" id="searchButton">search</button>
+                        </div>
+                    </div>
+                </form>
+            
             </div>
-            <div class="column is-three-quarters">
-                <div class="box has-background-black-ter" id="profileBox">
-                    <h1 class="title">profile</h1>
-                    <form>
-                        <div class="field">
-                            <label class="label">email</label>
-                            <div class="control">
-                                <input class="input" type="text" placeholder="email" id="editUserEmail">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">password</label>
-                            <div class="control">
-                                <input class="input" type="password" placeholder="password" id="editUserKey">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-info is-dark" id="updateUserButton">update</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        </div>
+       
     </section>
+
     <section class="section" id="servicesView">
         <div class="columns">
             <div class="column" id="servicesList">
                 </div>
         </div>    
     </section>
+
 </body>
+
 <script type="module" src="js/renderer.js"></script>
+<!-- Delete below and add function within temp.js to renderer.js for production runs -->
+<script src="js/staging.js"></script>
 
 </html>
+
