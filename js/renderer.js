@@ -1,6 +1,6 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://dreadco:8080/pipe";
+const apiUrl = "http://localhost:8080/pipe";
 const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
 let contextualizer = new Contextualizer();
@@ -77,11 +77,22 @@ setInterval(() => {
     }
 }, 3300);
 
-async function handleMatches(kind, matchPair) {
+function getRouteByType(routeMap, type) {
+    for (let route of routeMap) {
+        if (route.type === type) {
+            return route.route;
+        }
+    }
+    return "";
+}
+
+
+// probably the route will depend on the in kind of search, shohld enhance 
+async function handleMatches(kind, matchPair, route) {
     application.resultWorkers.push(1);
     for (let match of matchPair.matches) {
         try {
-            let result = await application.fetchMatch(kind, match, matchPair.type);
+            let result = await application.fetchMatch(kind, match, matchPair.type, route);
             application.results.push(result);
         } catch (error) {
             application.errors.push(error);
@@ -121,7 +132,12 @@ searchButton.addEventListener("click", async () => {
     for (let svr of application.servers) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
-                handleMatches(svr.kind, matchPair);
+                if (svr.routeMap) {
+                    svr.route = getRouteByType(svr.routeMap, matchPair.type);
+                } else {
+                    svr.route = "";
+                }
+                handleMatches(svr.kind, matchPair, svr.route);
             }
         }
     }

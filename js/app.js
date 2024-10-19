@@ -20,6 +20,44 @@ export class Application {
             {
                 "kind": "misp",
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
+            },
+            {
+                "kind": "virustotal",
+                "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
+                "routeMap": [{
+                    "type": "md5",
+                    "route": "file"
+                }, {
+                    "type": "sha1",
+                    "route": "file"
+                }, {
+                    "type": "sha256",
+                    "route": "file"
+                }, {
+                    "type": "sha512",
+                    "route": "file"
+                }, {
+                    "type": "ipv4",
+                    "route": "ip"
+                }, {
+                    "type": "ipv6",
+                    "route": "ip"
+                }, {
+                    "type": "email",
+                    "route": "email"
+                }, {
+                    "type": "url",
+                    "route": "url"
+                }, {
+                    "type": "domain",
+                    "route": "domains"
+                }, {
+                    "type": "filepath",
+                    "route": "file"
+                }, {
+                    "type": "filename",
+                    "route": "file"
+                }]
             }
         ];
         this.sampleData = `
@@ -49,11 +87,12 @@ export class Application {
         let data = await response.json();
         this.results.push(data);
     }
-    async fetchMatch(to, match, type) {
+    async fetchMatch(to, match, type, route) {
         const proxyRequest = {
             "to": to,
             "value": match,
             "type": type,
+            "route": route
         }
         console.log("got message", proxyRequest);
         let response = await fetch(this.apiUrl, {
