@@ -26,42 +26,37 @@ export class Application {
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
                 "routeMap": [{
                     "type": "md5",
-                    "route": "file"
+                    "route": "files"
                 }, {
                     "type": "sha1",
-                    "route": "file"
+                    "route": "files"
                 }, {
                     "type": "sha256",
-                    "route": "file"
+                    "route": "files"
                 }, {
                     "type": "sha512",
-                    "route": "file"
+                    "route": "files"
                 }, {
                     "type": "ipv4",
-                    "route": "ip"
+                    "route": "ip_addresses"
                 }, {
                     "type": "ipv6",
-                    "route": "ip"
-                }, {
-                    "type": "email",
-                    "route": "email"
-                }, {
+                    "route": "ip_addresses"
+                },{
                     "type": "url",
-                    "route": "url"
+                    "route": "urls"
                 }, {
                     "type": "domain",
                     "route": "domains"
                 }, {
                     "type": "filepath",
-                    "route": "file"
+                    "route": "files"
                 }, {
                     "type": "filename",
-                    "route": "file"
+                    "route": "files"
                 }]
             }
         ];
-        this.sampleData = `
-        `
     }
     setUserData(email, key) {
         this.user.email = email;
