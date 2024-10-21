@@ -19,10 +19,13 @@ const editUserEmail = document.getElementById("editUserEmail");
 const editUserKey = document.getElementById("editUserKey");
 const profileView = document.getElementById("profileView");
 const updateUserButton = document.getElementById("updateUserButton");
+const serviceView =  document.getElementById("servicesView");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
 profileView.style.display = "none";
+serviceView.style.display = "none";
+
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
 function checkUser() {
@@ -31,10 +34,12 @@ function checkUser() {
         loginScreen.style.display = "block";
         mainSection.style.display = "none";
         profileView.style.display = "none";
+        serviceView.style.display = "none";
     } else {
         loginScreen.style.display = "none";
         mainSection.style.display = "block";
         profileView.style.display = "none";
+        serviceView.style.display = "none";
     }
 }
 
