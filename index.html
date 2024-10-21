@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/bulma.min.css">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- <script href="js/renderer.js"></script> -->
     <title>insights</title>
 </head>
 
 <body>
+<!--LOGIN-->
     <section class="section has-background-black" id="loginScreen">
         <h1 class="title has-text-primary has-text-centered" id="extTitle">Insights</h1>
         <div class="field">
@@ -35,24 +38,47 @@
             </div>
         </div>
     </section>
+
+<!--MAIN-->
     <section class="section has-background-black-ter" id="mainSection">
         <div class="columns" id="mainColumns">
-            <div class="column is-one-quarter">
-                <aside class="menu">
-                    <p class="menu-label">
-                        menu
-                    </p>
-                    <ul class="menu-list">
-                        <li><a href="" class="has-text-info has-background-black-ter is-active"
-                                id="menuSearch">search</a></li>
-                        <li><a href="" class="has-text-info has-background-black-ter" id="menuAdd">add</a></li>
-                        <li><a href="" class="has-text-info has-background-black-ter" id="menuProfile">profile</a></li>
-                    </ul>
-                </aside>
+                  <!-- Title -->
+        <!-- <aside class="menu"> -->
+            <nav class="level is-mobile">
+                <div class="level-item" style="flex:none">
+                   <h1 class="title has-text-primary">Insights</h1>
+                </div>
+                <div>
+                    
+                </div>
+                <div class="level-item"style="flex:none">
+                 <!-- Hamburger Menu -->
+                  <div>
+                    <a role="button" class="navbar-burger has-text-primary is-pulled-right" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="burger">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a> 
+                  </div>
+                </div>
+              </nav>
             </div>
+
+            <br/>
+
+            <div class="navbar-menu" id = "nav-links">
+                <div>
+                    <!-- <a href="#" class="navbar-item has-text-primary has-background-black-ter" id="menuSearch">search</a> -->
+                    <a href="#" class="navbar-item has-text-primary has-background-black-ter " id="menuServices">services</a>
+                    <a href="#" class="navbar-item has-text-primary has-background-black-ter" id="menuProfile">profile</a>
+                </div>
+
+            </div>
+
             <div class="column is-three-quarters">
                 <div class="box has-background-black-ter" id="matchBox">
-                    <h1 class="title">insights</h1>
+                    <h1 class="title has-text-primary">Search</h1>
                     <form action="">
                         <div class="field">
                             <!-- <label class="label">Search</label> -->
@@ -62,7 +88,7 @@
                         </div>
                         <div class="field">
                             <div class="control">
-                                <button class="button is-info is-dark" id="searchButton">search</button>
+                                <button class="button is-primary" id="searchButton">search</button>
                             </div>
                         </div>
                     </form>
@@ -71,46 +97,86 @@
             </div>
         </div>
     </section>
-    <section class="section" id="profileView">
-        <div class="columns">
-            <div class="column is-one-quarter">
-                <aside class="menu">
-                    <p class="menu-label" id="profileMenu">
-                        menu
-                    </p>
-                    <ul class="menu-list">
-                        <li><a class="has-text-info has-background-black-ter" id="menuSearch">search</a></li>
-                        <li><a class="has-text-info has-background-black-ter" id="menuAdd">add</a></li>
-                        <li><a class="has-text-info has-background-black-ter is-active" id="menuProfile">profile</a></li>
-                    </ul>
-                </aside>
+
+<!--SERVICES-->
+<section class="section has-background-black-ter" id="servicesView">
+       
+    <h1 class="title has-text-primary">Services</h1>
+    
+    <div class="columns">
+        <div class="column">
+            <form>
+            <button class="button is-primary is-pulled-left">
+                <span class="icon">
+                  <i class="fa fa-arrow-circle-left"></i>
+                </span>
+                <span>Back</span>
+              </button>
+            <button class="button is-primary is-pulled-right" id="updateUserButton">
+                <span class="icon">
+                    <i class="fa fa-refresh"></i>
+                  </span>
+                  <span>Request</span>
+            </button>
+            </form>
+        </div>
+        <div class="column">
+          
+
+        </div>
+        <div class="column">
+            <div class="column" id="servicesList">       
+                <div class="card-list" id="cardList"></div>      
             </div>
-            <div class="column is-three-quarters">
+        </div>
+</section>
+
+<!--PROFILE-->
+    <section class="section has-background-black-ter" id="profileView">
+        <div class="columns">
+            <div class="column">
+                <h1 class="title has-text-primary" style="margin:0px">Profile</h1>
                 <div class="box has-background-black-ter" id="profileBox">
-                    <h1 class="title">profile</h1>
+                    <!-- <h1 class="title">profile</h1> -->
                     <form>
                         <div class="field">
-                            <label class="label">email</label>
+                            <label class="label has-text-primary">Email</label>
                             <div class="control">
                                 <input class="input" type="text" placeholder="email" id="editUserEmail">
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label">password</label>
+                            <label class="label has-text-primary">Password</label>
                             <div class="control">
                                 <input class="input" type="password" placeholder="password" id="editUserKey">
                             </div>
-                        </div>
-                        <div class="field">
                             <div class="control">
-                                <button class="button is-info is-dark" id="updateUserButton">update</button>
+                                <a class="is-pulled-right has-text-primary"> Lost Key? </a>
+                            </div>
+                        </div>
+                    </br>
+                        <div class="field">
+                            <div class="control profileButtons" >
+                                <button class="button is-primary is-pulled-left">
+                                    <span class="icon">
+                                      <i class="fa fa-arrow-circle-left"></i>
+                                    </span>
+                                    <span>Back</span>
+                                  </button>
+                                <button class="button is-primary" id="updateUserButton">
+                                    <span class="icon">
+                                        <i class="fa fa-refresh"></i>
+                                      </span>
+                                      <span>Update</span>
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
     </section>
+
 </body>
 <script type="module" src="js/renderer.js"></script>
-
+<script type="module" src="js/staging.js"></script>
 </html>
