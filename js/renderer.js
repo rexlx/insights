@@ -90,7 +90,7 @@ async function handleMatches(kind, matchPair) {
     application.resultWorkers.pop();
 }
 
-
+/* Menu Profile */
 menuProfile.addEventListener("click", (e) => {
     e.preventDefault();
     editUserEmail.value = application.user.email;
@@ -103,6 +103,7 @@ menuProfile.addEventListener("click", (e) => {
         checkUser();
     });
 });
+
 
 searchButton.addEventListener("click", async () => {
     matchBox.innerHTML = "<p>parsed text...searching...</p>";

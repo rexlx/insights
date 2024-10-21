@@ -13,3 +13,24 @@
 
 }
 
+#servicesView{
+  display:none;
+}
+
+
+
+.containerCheckBox {
+  display: flex;          /* Enable flexbox */
+  justify-content: space-between; /* Space between elements */
+  align-items: center;    /* Center items vertically */
+  padding: 0px 20px      /* Add padding */
+}
+
+.card-header{
+  display:block;
+}
+
+input{
+
+  accent-color: green;
+}

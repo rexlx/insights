@@ -22,8 +22,7 @@ export class Application {
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
             }
         ];
-        this.sampleData = `
-        `
+        this.sampleData = ``
     }
     setUserData(email, key) {
         this.user.email = email;
