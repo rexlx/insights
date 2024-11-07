@@ -20,10 +20,43 @@ export class Application {
             {
                 "kind": "misp",
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
+            },
+            {
+                "kind": "virustotal",
+                "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
+                "routeMap": [{
+                    "type": "md5",
+                    "route": "files"
+                }, {
+                    "type": "sha1",
+                    "route": "files"
+                }, {
+                    "type": "sha256",
+                    "route": "files"
+                }, {
+                    "type": "sha512",
+                    "route": "files"
+                }, {
+                    "type": "ipv4",
+                    "route": "ip_addresses"
+                }, {
+                    "type": "ipv6",
+                    "route": "ip_addresses"
+                },{
+                    "type": "url",
+                    "route": "urls"
+                }, {
+                    "type": "domain",
+                    "route": "domains"
+                }, {
+                    "type": "filepath",
+                    "route": "files"
+                }, {
+                    "type": "filename",
+                    "route": "files"
+                }]
             }
         ];
-        this.sampleData = `
-        `
     }
     setUserData(email, key) {
         this.user.email = email;
@@ -49,11 +82,12 @@ export class Application {
         let data = await response.json();
         this.results.push(data);
     }
-    async fetchMatch(to, match, type) {
+    async fetchMatch(to, match, type, route) {
         const proxyRequest = {
             "to": to,
             "value": match,
             "type": type,
+            "route": route
         }
         console.log("got message", proxyRequest);
         let response = await fetch(this.apiUrl, {
