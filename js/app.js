@@ -22,6 +22,10 @@ export class Application {
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
             },
             {
+                "kind": "deepfry",
+                "type": ["ipv4"],
+            },
+            {
                 "kind": "virustotal",
                 "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
                 "routeMap": [{
@@ -66,12 +70,13 @@ export class Application {
         });
     }
     async fetchMatches(to, matches, type) {
+        let thisURL = this.apiUrl+`/pipe`
         const proxyRequest = {
             "to": to,
             "value": matches,
             "type": type,
         }
-        let response = await fetch(this.apiUrl, {
+        let response = await fetch(thisURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,6 +88,7 @@ export class Application {
         this.results.push(data);
     }
     async fetchMatch(to, match, type, route) {
+        let thisURL = this.apiUrl+`/pipe`
         const proxyRequest = {
             "to": to,
             "value": match,
@@ -90,7 +96,7 @@ export class Application {
             "route": route
         }
         console.log("got message", proxyRequest);
-        let response = await fetch(this.apiUrl, {
+        let response = await fetch(thisURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,5 +106,17 @@ export class Application {
         });
         let data = await response.json();
         return data;
+    }
+    async getServices() {
+        let thisURL = this.apiUrl+`/services`
+        let response = await fetch(thisURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${this.user.email}:${this.user.key}`
+            }
+        });
+        let data = await response.json();
+        this.servers = data;
     }
 }

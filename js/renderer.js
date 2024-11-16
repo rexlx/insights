@@ -1,6 +1,6 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://localhost:8080/pipe";
+const apiUrl = "http://localhost:8081/";
 const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
 let contextualizer = new Contextualizer();
@@ -26,6 +26,7 @@ mainSection.style.display = "block";
 profileView.style.display = "none";
 serviceView.style.display = "none";
 
+await application.getServices();
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
 function checkUser() {
@@ -45,7 +46,8 @@ function checkUser() {
 
 async function checkErrors() {
     if (application.errors.length > 0) {
-        for (let error of application.errors) {
+        const errors = removeDupsWithSet(application.errors);
+        for (let error of errors) {
             matchBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
         }
     }
@@ -114,6 +116,7 @@ menuProfile.addEventListener("click", (e) => {
     editUserKey.value = application.user.key;
     loginScreen.style.display = "none";
     mainSection.style.display = "none";
+    serviceView.style.display = "none";
     profileView.style.display = "block";
     updateUserButton.addEventListener("click", () => {
         application.setUserData(editUserEmail.value, editUserKey.value);
