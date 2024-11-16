@@ -19,14 +19,16 @@ const editUserEmail = document.getElementById("editUserEmail");
 const editUserKey = document.getElementById("editUserKey");
 const profileView = document.getElementById("profileView");
 const updateUserButton = document.getElementById("updateUserButton");
-const serviceView =  document.getElementById("servicesView");
+const serviceView = document.getElementById("servicesView");
+const menuServices = document.getElementById("menuServices");
+// const serviceView =  document.getElementById("servicesView");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
 profileView.style.display = "none";
 serviceView.style.display = "none";
 
-await application.getServices();
+// await application.getServices();
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
 function checkUser() {
@@ -58,6 +60,9 @@ setInterval(() => {
     // checkUser();
     checkErrors();
     try {
+        if (application.user.email !== "" && application.user.key !== "") {
+            application.getServices();
+        }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
@@ -81,7 +86,7 @@ setInterval(() => {
             }
         }
     } catch (error) {
-        console.log(error); 
+        console.log(error);
     }
 }, 3300);
 
@@ -137,7 +142,7 @@ searchButton.addEventListener("click", async () => {
         }
         allMatches.push(matchPair);
     }
-    
+
     for (let svr of application.servers) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
@@ -162,6 +167,46 @@ loginButton.addEventListener("click", () => {
     checkUser();
 });
 
+menuServices.addEventListener("click", (e) => {
+    e.preventDefault();
+    // editUserEmail.value = application.user.email;
+    // editUserKey.value = application.user.key;
+    loginScreen.style.display = "none";
+    mainSection.style.display = "none";
+    profileView.style.display = "none";
+    serviceView.style.display = "block";
+    function createServiceCard(title, types) {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+            <header class="card-header">
+             <div class="containerCheckBox">
+                <p class="card-header-title">${title}</p>
+                <label class="switch-label" for="toggleSwitch">
+                    <input type="checkbox" checked/>
+                          
+                </label>
+                 </div>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <p>${types}</p>
+                </div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    // Insert cards into the card list
+    const cardList = document.getElementById('cardList');
+    application.servers.forEach(data => {
+        const cardElement = createServiceCard(data.kind, data.type);
+        cardList.appendChild(cardElement);
+    });
+});
+
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
@@ -175,4 +220,3 @@ function removeDupsWithSet(arr) {
 // }
 
 
-  

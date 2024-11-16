@@ -1,9 +1,6 @@
 export class Application {
     constructor(apiUrl, apiKey) {
         this.user = {
-            "email": "",
-            "key": "",
-            "admin": false
         };
         chrome.storage.local.get(["user"], (result) => {
             if (result.user) {
