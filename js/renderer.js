@@ -1,6 +1,6 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://localhost:8080/pipe";
+const apiUrl = "http://localhost:8080/";
 const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
 let contextualizer = new Contextualizer();

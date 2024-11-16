@@ -66,12 +66,13 @@ export class Application {
         });
     }
     async fetchMatches(to, matches, type) {
+        const myURL = this.apiUrl+`pipe`
         const proxyRequest = {
             "to": to,
             "value": matches,
             "type": type,
         }
-        let response = await fetch(this.apiUrl, {
+        let response = await fetch(myURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,6 +84,7 @@ export class Application {
         this.results.push(data);
     }
     async fetchMatch(to, match, type, route) {
+        myURL = this.apiUrl+`pipe`
         const proxyRequest = {
             "to": to,
             "value": match,
@@ -90,7 +92,7 @@ export class Application {
             "route": route
         }
         console.log("got message", proxyRequest);
-        let response = await fetch(this.apiUrl, {
+        let response = await fetch(myURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
