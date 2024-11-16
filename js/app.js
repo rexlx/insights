@@ -103,4 +103,16 @@ export class Application {
         let data = await response.json();
         return data;
     }
+    async getServices() {
+        let thisURL = this.apiUrl+`services`
+        let response = await fetch(thisURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${this.user.email}:${this.user.key}`
+            }
+        });
+        let data = await response.json();
+        this.servers = data;
+    }
 }

@@ -25,6 +25,7 @@ mainSection.style.display = "block";
 profileView.style.display = "none";
 // const menuLinks = document.querySelectorAll('.menu-list a');
 
+// await application.getServices();
 function checkUser() {
     matchBox.innerHTML = `<p class="has-text-info">logged in as ${application.user.email}</p>`;
     if (application.user.key === "") {
