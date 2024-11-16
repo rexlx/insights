@@ -62,6 +62,7 @@ setInterval(() => {
     try {
         if (application.user.email !== "" && application.user.key !== "") {
             application.getServices();
+            application.fetchUser();
         }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
@@ -175,37 +176,47 @@ menuServices.addEventListener("click", (e) => {
     mainSection.style.display = "none";
     profileView.style.display = "none";
     serviceView.style.display = "block";
-    function createServiceCard(title, types) {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        card.innerHTML = `
-            <header class="card-header">
-             <div class="containerCheckBox">
-                <p class="card-header-title">${title}</p>
-                <label class="switch-label" for="toggleSwitch">
-                    <input type="checkbox" checked/>
-                          
-                </label>
-                 </div>
-            </header>
-            <div class="card-content">
-                <div class="content">
-                    <p>${types}</p>
-                </div>
-            </div>
-        `;
-
-        return card;
-    }
+    
 
     // Insert cards into the card list
     const cardList = document.getElementById('cardList');
     application.servers.forEach(data => {
-        const cardElement = createServiceCard(data.kind, data.type);
+        // cardList.innerHTML += application.user.services.length;
+        // cardList.innerHTML = "";
+        data.checked = false;
+        for (let service of application.user.services) {
+            if (service.kind === data.kind) {
+                data.checked = true;
+            }
+        }
+        const cardElement = createServiceCard(data.kind, data.type, data.checked);
         cardList.appendChild(cardElement);
     });
 });
+
+function createServiceCard(title, types, checked) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    let checkedValue = checked ? "checked" : "";
+    card.innerHTML = `
+        <header class="card-header">
+         <div class="containerCheckBox">
+            <p class="card-header-title">${title}</p>
+            <label class="switch-label" for="toggleSwitch">
+                <input type="checkbox" ${checkedValue}/>
+                      
+            </label>
+             </div>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <p>${types}</p>
+            </div>
+        </div>
+    `;
+
+    return card;
+}
 
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);

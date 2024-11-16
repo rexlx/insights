@@ -66,6 +66,19 @@ export class Application {
             console.log("User data saved");
         });
     }
+    async fetchUser() {
+        let thisURL = this.apiUrl+`user`
+        let response = await fetch(thisURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${this.user.email}:${this.user.key}`
+            }
+        });
+        let data = await response.json();
+        this.user = data;
+        // return data;
+    }
     async fetchMatches(to, matches, type) {
         let thisURL = this.apiUrl+`/pipe`
         const proxyRequest = {
