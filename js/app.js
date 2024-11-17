@@ -13,51 +13,7 @@ export class Application {
         this.errors = [];
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
-        this.servers = [
-            {
-                "kind": "misp",
-                "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
-            },
-            {
-                "kind": "deepfry",
-                "type": ["ipv4"],
-            },
-            {
-                "kind": "virustotal",
-                "type": ["md5", "sha1", "sha256", "sha512", "ipv4", "ipv6", "email", "url", "domain", "filepath", "filename"],
-                "routeMap": [{
-                    "type": "md5",
-                    "route": "files"
-                }, {
-                    "type": "sha1",
-                    "route": "files"
-                }, {
-                    "type": "sha256",
-                    "route": "files"
-                }, {
-                    "type": "sha512",
-                    "route": "files"
-                }, {
-                    "type": "ipv4",
-                    "route": "ip_addresses"
-                }, {
-                    "type": "ipv6",
-                    "route": "ip_addresses"
-                },{
-                    "type": "url",
-                    "route": "urls"
-                }, {
-                    "type": "domain",
-                    "route": "domains"
-                }, {
-                    "type": "filepath",
-                    "route": "files"
-                }, {
-                    "type": "filename",
-                    "route": "files"
-                }]
-            }
-        ];
+        this.servers = [];
     }
     setUserData(email, key) {
         this.user.email = email;
@@ -68,6 +24,7 @@ export class Application {
     }
     addService(service) {
         this.servers.push(service);
+        this.user.services = this.servers;
     }
     removeService(service) {
         this.servers = this.servers.filter(s => s.kind !== service.kind);
@@ -83,6 +40,7 @@ export class Application {
         });
         let data = await response.json();
         this.user = data;
+        // this.servers = this.user.services;
         // return data;
     }
     async updateUser(user) {
@@ -137,7 +95,7 @@ export class Application {
         return data;
     }
     async getServices() {
-        let thisURL = this.apiUrl+`/services`
+        let thisURL = this.apiUrl+`getservices`
         let response = await fetch(thisURL, {
             method: 'GET',
             headers: {
