@@ -206,7 +206,7 @@ function createServiceCard(service) {
         <header class="card-header">
             <div class="containerCheckBox">
                 <p class="card-header-title">${service.kind}</p>
-                <button class="button add-button">${service.checked ? 'Remove' : 'Add'}</button> 
+                <button class="button add-button has-background-warning">${service.checked ? 'Remove' : 'Add'}</button> 
             </div>
         </header>
         <div class="card-content">

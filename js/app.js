@@ -28,6 +28,7 @@ export class Application {
     }
     removeService(service) {
         this.servers = this.servers.filter(s => s.kind !== service.kind);
+        this.user.services = this.servers;
     }
     async fetchUser() {
         let thisURL = this.apiUrl+`user`
@@ -75,7 +76,7 @@ export class Application {
         this.results.push(data);
     }
     async fetchMatch(to, match, type, route) {
-        let thisURL = this.apiUrl+`/pipe`
+        let thisURL = this.apiUrl+`pipe`
         const proxyRequest = {
             "to": to,
             "value": match,
