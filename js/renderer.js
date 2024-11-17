@@ -184,36 +184,51 @@ menuServices.addEventListener("click", (e) => {
         // cardList.innerHTML += application.user.services.length;
         // cardList.innerHTML = "";
         data.checked = false;
-        for (let service of application.user.services) {
-            if (service.kind === data.kind) {
-                data.checked = true;
-            }
+        try {
+            application.user.services.forEach(s => {
+                if (s.kind === data.kind) {
+                    data.checked = true;
+                }
+            });
+        } catch (error) {
+            console.log(error);
         }
-        const cardElement = createServiceCard(data.kind, data.type, data.checked);
+        const cardElement = createServiceCard(data);
         cardList.appendChild(cardElement);
     });
 });
 
-function createServiceCard(title, types, checked) {
+function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'card';
-    let checkedValue = checked ? "checked" : "";
+    // let checkedValue = checked ? "checked" : "";
     card.innerHTML = `
         <header class="card-header">
-         <div class="containerCheckBox">
-            <p class="card-header-title">${title}</p>
-            <label class="switch-label" for="toggleSwitch">
-                <input type="checkbox" ${checkedValue}/>
-                      
-            </label>
-             </div>
+            <div class="containerCheckBox">
+                <p class="card-header-title">${service.kind}</p>
+                <button class="button add-button">${service.checked ? 'Remove' : 'Add'}</button> 
+            </div>
         </header>
         <div class="card-content">
             <div class="content">
-                <p>${types}</p>
+                <p>${service.type}</p>
             </div>
         </div>
     `;
+    const addButton = card.querySelector('.add-button'); 
+    addButton.textContent = service.checked ? 'Remove' : 'Add';
+    addButton.addEventListener('click', () => {
+        if (service.checked) {
+            application.removeService(service);
+            application.updateUser(application.user);
+            service.checked = false;
+        } else {
+            application.addService(service);
+            application.updateUser(application.user);
+            service.checked = true;
+        }
+        addButton.textContent = service.checked ? 'Remove' : 'Add';
+    });
 
     return card;
 }

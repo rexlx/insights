@@ -66,6 +66,12 @@ export class Application {
             console.log("User data saved");
         });
     }
+    addService(service) {
+        this.servers.push(service);
+    }
+    removeService(service) {
+        this.servers = this.servers.filter(s => s.kind !== service.kind);
+    }
     async fetchUser() {
         let thisURL = this.apiUrl+`user`
         let response = await fetch(thisURL, {
@@ -78,6 +84,19 @@ export class Application {
         let data = await response.json();
         this.user = data;
         // return data;
+    }
+    async updateUser(user) {
+        let thisURL = this.apiUrl+`updateuser`
+        let response = await fetch(thisURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${this.user.email}:${this.user.key}`
+            },
+            body: JSON.stringify(user)
+        });
+        let data = await response.json();
+        this.user = data;
     }
     async fetchMatches(to, matches, type) {
         let thisURL = this.apiUrl+`/pipe`
