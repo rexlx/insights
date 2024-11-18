@@ -77,7 +77,7 @@ setInterval(() => {
                     <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
-                    <p class="has-text-white">link: <span class="has-text-white">${result.link}</span></p>
+                    <p class="has-text-white">link: <a href="${result.link}" target="_blank" rel="noopener noreferrer"><span class="has-text-white">${result.link}</span></a></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
                     </div>
                     </article>`;
