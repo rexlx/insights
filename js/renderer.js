@@ -201,16 +201,17 @@ menuServices.addEventListener("click", (e) => {
 function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'card';
+    card.classList.add('has-background-dark');
     // let checkedValue = checked ? "checked" : "";
     card.innerHTML = `
         <header class="card-header">
             <div class="containerCheckBox">
                 <p class="card-header-title">${service.kind}</p>
-                <button class="button add-button has-background-warning">${service.checked ? 'Remove' : 'Add'}</button> 
+                <button class="button add-button is-warning is-outlined">${service.checked ? 'Remove' : 'Add'}</button> 
             </div>
         </header>
-        <div class="card-content">
-            <div class="content">
+        <div class="card-content has-background-black">
+            <div class="content has-text-link-light">
                 <p>${service.type}</p>
             </div>
         </div>
