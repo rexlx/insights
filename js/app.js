@@ -14,6 +14,7 @@ export class Application {
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
         this.servers = [];
+        this.focus = {};
     }
     setUserData(email, key) {
         this.user.email = email;
@@ -43,6 +44,18 @@ export class Application {
         this.user = data;
         // this.servers = this.user.services;
         // return data;
+    }
+    async fetchDetails(id) {
+        let thisURL = this.apiUrl+`events/${id}`
+        let response = await fetch(thisURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${this.user.email}:${this.user.key}`
+            }
+        });
+        let data = await response.json();
+        this.focus = data;
     }
     async updateUser(user) {
         let thisURL = this.apiUrl+`updateuser`

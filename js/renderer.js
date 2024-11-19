@@ -21,6 +21,7 @@ const profileView = document.getElementById("profileView");
 const updateUserButton = document.getElementById("updateUserButton");
 const serviceView = document.getElementById("servicesView");
 const menuServices = document.getElementById("menuServices");
+const viewButtons = document.querySelectorAll('.view-button');
 // const serviceView =  document.getElementById("servicesView");
 
 loginScreen.style.display = "none";
@@ -55,6 +56,7 @@ async function checkErrors() {
     }
 }
 
+// <p class="has-text-white">link: <a href="${result.link}" target="_blank" rel="noopener noreferrer"><span class="has-text-white">${result.link}</span></a></p>
 
 setInterval(() => {
     // checkUser();
@@ -67,20 +69,35 @@ setInterval(() => {
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
+                const uniq = `details-${result.link}`
                 matchBox.innerHTML += `<article class="message is-dark">
                 <div class="message-header ${result.background}">
                     <p>${result.from}</p>
-                    <button class="delete" aria-label="delete"></button>
+                    <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
                     </div>
                     <div class="message-body has-background-dark-ter">
                     <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
                     <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
-                    <p class="has-text-white">link: <a href="${result.link}" target="_blank" rel="noopener noreferrer"><span class="has-text-white">${result.link}</span></a></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
                     </div>
                     </article>`;
+                document.getElementById(`${uniq}`).addEventListener('click',async (e) => {
+                    e.preventDefault();
+                    // const link = e.target.dataset.link;
+                    try {
+                        await application.fetchDetails(result.link);
+                        // const newTab = window.open(link, '_blank');
+                        const newTab = window.open();
+                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                    } catch (error) {
+                        application.errors.push(error);
+                        console.log(error);
+                    }
+                });
+
+
             }
             if (application.resultWorkers.length === 0) {
                 application.results = [];
@@ -176,7 +193,7 @@ menuServices.addEventListener("click", (e) => {
     mainSection.style.display = "none";
     profileView.style.display = "none";
     serviceView.style.display = "block";
-    
+
 
     // Insert cards into the card list
     const cardList = document.getElementById('cardList');
@@ -216,7 +233,7 @@ function createServiceCard(service) {
             </div>
         </div>
     `;
-    const addButton = card.querySelector('.add-button'); 
+    const addButton = card.querySelector('.add-button');
     addButton.textContent = service.checked ? 'Remove' : 'Add';
     addButton.addEventListener('click', () => {
         if (service.checked) {
