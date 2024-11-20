@@ -109,6 +109,11 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
+        this.results.push(data);
+        if (this.resultHistory.length > 24) {
+            let num2Rm = this.resultHistory.length - 24;
+            this.resultHistory.splice(0, num2Rm);
+        }
         this.resultHistory.push(data);
         return data;
     }
@@ -132,6 +137,10 @@ export class Application {
         if (this.resultHistory.length === 0) {
             this.errors.push("No results to save");
             return;
+        }
+        if (this.resultHistory.length > 24) {
+            let num2Rm = this.resultHistory.length - 24;
+            this.resultHistory.splice(0, num2Rm);
         }
         try {
             chrome.storage.local.set({ "history": this.resultHistory }, () => {

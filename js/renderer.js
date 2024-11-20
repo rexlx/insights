@@ -89,24 +89,28 @@ setInterval(() => {
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
                     </div>
                     </article>`;
-                document.getElementById(`${uniq}`).addEventListener('click',async (e) => {
-                    e.preventDefault();
-                    // const link = e.target.dataset.link;
+                if (uniq === "details-undefined") {
+                    const btn = document.getElementById(uniq);
+                    btn.disabled = true;
+                }
+
+                // const thisLink = result.link;
+            }
+            const buttons = document.querySelectorAll('.view-button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bid = e.target.id;
+                    const thisLink = bid.replace("details-", "");
                     try {
-                        await application.fetchDetails(result.link);
-                        // const newTab = window.open(link, '_blank');
+                        await application.fetchDetails(thisLink);
                         const newTab = window.open();
                         newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
                     } catch (error) {
                         application.errors.push(error);
-                        console.log(error);
                     }
+
                 });
-            }
-            if (application.resultWorkers.length === 0) {
-                errorBox.innerHTML = "trying to save history";
-                application.setHistory(application.results);
-            }
+            });
         }
     } catch (error) {
         console.log(error);
@@ -165,6 +169,7 @@ historyButton.addEventListener("click", (e) => {
     // }
     for (let result of application.resultHistory) {
         const uniq = `details-${result.link}`
+        // application.errors.push(uniq);
         matchBox.innerHTML += `<article class="message is-dark">
         <div class="message-header ${result.background}">
             <p>${result.from}</p>
@@ -178,18 +183,26 @@ historyButton.addEventListener("click", (e) => {
             <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
             </div>
             </article>`;
-        document.getElementById(`${uniq}`).addEventListener('click',async (e) => {
-            e.preventDefault();
-            try {
-                await application.fetchDetails(result.link);
-                const newTab = window.open();
-                newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
-            } catch (error) {
-                application.errors.push(error);
-                console.log(error);
-            }
-        });
+        if (uniq === "details-undefined") {
+            const btn = document.getElementById(uniq);
+            btn.disabled = true;
+        }
     }
+    const buttons = document.querySelectorAll('.view-button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bid = e.target.id;
+                    const thisLink = bid.replace("details-", "");
+                    try {
+                        await application.fetchDetails(thisLink);
+                        const newTab = window.open();
+                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                    } catch (error) {
+                        application.errors.push(error);
+                    }
+
+                });
+            });
 });
 
 searchButton.addEventListener("click", async () => {
