@@ -111,6 +111,9 @@ setInterval(() => {
 
                 });
             });
+            if (application.resultWorkers.length === 0) {
+                application.setHistory();
+            }
         }
     } catch (error) {
         console.log(error);
