@@ -3,6 +3,7 @@ import { Contextualizer } from "./parser.js";
 const apiUrl = "http://localhost:8081/";
 const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
+application.init();
 let contextualizer = new Contextualizer();
 
 const matchBox = document.getElementById("matchBox");
@@ -21,7 +22,9 @@ const profileView = document.getElementById("profileView");
 const updateUserButton = document.getElementById("updateUserButton");
 const serviceView = document.getElementById("servicesView");
 const menuServices = document.getElementById("menuServices");
-const viewButtons = document.querySelectorAll('.view-button');
+const historyButton = document.getElementById("historyButton");
+const errorBox = document.getElementById("errors");
+// const viewButtons = document.querySelectorAll('.view-button');
 // const serviceView =  document.getElementById("servicesView");
 
 loginScreen.style.display = "none";
@@ -48,10 +51,11 @@ function checkUser() {
 }
 
 async function checkErrors() {
+    errorBox.innerHTML = "";
     if (application.errors.length > 0) {
         const errors = removeDupsWithSet(application.errors);
         for (let error of errors) {
-            matchBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
+            errorBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
         }
     }
 }
@@ -62,9 +66,11 @@ setInterval(() => {
     // checkUser();
     checkErrors();
     try {
-        if (application.user.email !== "" && application.user.key !== "") {
-            application.getServices();
+        if (application.user.email === "" && application.user.key === "") {
             application.fetchUser();
+        } else {
+            application.getServices();
+            // application.fetchHistory();
         }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
@@ -96,11 +102,10 @@ setInterval(() => {
                         console.log(error);
                     }
                 });
-
-
             }
             if (application.resultWorkers.length === 0) {
-                application.results = [];
+                errorBox.innerHTML = "trying to save history";
+                application.setHistory(application.results);
             }
         }
     } catch (error) {
@@ -145,6 +150,46 @@ menuProfile.addEventListener("click", (e) => {
         application.setUserData(editUserEmail.value, editUserKey.value);
         checkUser();
     });
+});
+
+historyButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    loginScreen.style.display = "none";
+    mainSection.style.display = "block";
+    profileView.style.display = "none";
+    serviceView.style.display = "none";
+    matchBox.innerHTML = `<p class="has-text-info">application history is ${application.resultHistory.length}</p>`;
+    // if (application.history === undefined) {
+    //     application.history = [];
+    //     checkUser();
+    // }
+    for (let result of application.resultHistory) {
+        const uniq = `details-${result.link}`
+        matchBox.innerHTML += `<article class="message is-dark">
+        <div class="message-header ${result.background}">
+            <p>${result.from}</p>
+            <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
+            </div>
+            <div class="message-body has-background-dark-ter">
+            <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
+            <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
+            <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
+            <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
+            <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
+            </div>
+            </article>`;
+        document.getElementById(`${uniq}`).addEventListener('click',async (e) => {
+            e.preventDefault();
+            try {
+                await application.fetchDetails(result.link);
+                const newTab = window.open();
+                newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+            } catch (error) {
+                application.errors.push(error);
+                console.log(error);
+            }
+        });
+    }
 });
 
 searchButton.addEventListener("click", async () => {

@@ -14,7 +14,9 @@ export class Application {
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
         this.servers = [];
-        this.focus = {};
+        this.resultHistory = [];
+        this.focus = { "id": "none" };
+        this.initialized = false;
     }
     setUserData(email, key) {
         this.user.email = email;
@@ -32,7 +34,7 @@ export class Application {
         this.user.services = this.servers;
     }
     async fetchUser() {
-        let thisURL = this.apiUrl+`user`
+        let thisURL = this.apiUrl + `user`
         let response = await fetch(thisURL, {
             method: 'GET',
             headers: {
@@ -46,7 +48,7 @@ export class Application {
         // return data;
     }
     async fetchDetails(id) {
-        let thisURL = this.apiUrl+`events/${id}`
+        let thisURL = this.apiUrl + `events/${id}`
         let response = await fetch(thisURL, {
             method: 'GET',
             headers: {
@@ -58,7 +60,7 @@ export class Application {
         this.focus = data;
     }
     async updateUser(user) {
-        let thisURL = this.apiUrl+`updateuser`
+        let thisURL = this.apiUrl + `updateuser`
         let response = await fetch(thisURL, {
             method: 'POST',
             headers: {
@@ -71,7 +73,7 @@ export class Application {
         this.user = data;
     }
     async fetchMatches(to, matches, type) {
-        let thisURL = this.apiUrl+`/pipe`
+        let thisURL = this.apiUrl + `/pipe`
         const proxyRequest = {
             "to": to,
             "value": matches,
@@ -87,9 +89,10 @@ export class Application {
         });
         let data = await response.json();
         this.results.push(data);
+        this.resultHistory.push(data);
     }
     async fetchMatch(to, match, type, route) {
-        let thisURL = this.apiUrl+`pipe`
+        let thisURL = this.apiUrl + `pipe`
         const proxyRequest = {
             "to": to,
             "value": match,
@@ -106,10 +109,15 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
+        this.resultHistory.push(data);
         return data;
     }
     async getServices() {
-        let thisURL = this.apiUrl+`getservices`
+        if (!this.initialized) {
+            await this.fetchUser();
+            this.initialized = true;
+        }
+        let thisURL = this.apiUrl + `getservices`
         let response = await fetch(thisURL, {
             method: 'GET',
             headers: {
@@ -120,4 +128,39 @@ export class Application {
         let data = await response.json();
         this.servers = data;
     }
+    setHistory() {
+        if (this.resultHistory.length === 0) {
+            this.errors.push("No results to save");
+            return;
+        }
+        try {
+            chrome.storage.local.set({ "history": this.resultHistory }, () => {
+                console.log("History saved");
+            });
+        } catch (err) {
+            this.errors.push("Error saving history");
+        }
+        this.results = [];
+        // this.resultWorkers.pop();
+    }
+    fetchHistory() {
+        try {
+          chrome.storage.local.get(["history"], (result) => {
+            if (result) {
+              let x = result.history;
+            //   this.errors.push(JSON.stringify(x));
+              this.resultHistory.push(...x);
+            } else {
+              this.errors.push("No history found in storage.");
+            }
+          }); // Ensure 'this' refers to the class instance
+        } catch (err) {
+          this.errors.push("Error fetching history: " + err);
+        }
+      }
+      init() {
+        this.fetchUser();
+        this.fetchHistory();
+        this.getServices();
+      }
 }
