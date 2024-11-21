@@ -1,8 +1,8 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://localhost:8080/pipe";
-const apiKey = "1234567890";
+const apiUrl = "http://localhost:8081/";
 let application = new Application(apiUrl, apiKey);
+application.init();
 let contextualizer = new Contextualizer();
 
 const matchBox = document.getElementById("matchBox");
@@ -13,17 +13,20 @@ const loginScreen = document.getElementById("loginScreen");
 const loginButton = document.getElementById("loginButton");
 const userEmail = document.getElementById("userEmail");
 const userKey = document.getElementById("userKey");
-const loginInfo = document.getElementById("loginInfo");
 const menuProfile = document.getElementById("menuProfile");
 const editUserEmail = document.getElementById("editUserEmail");
 const editUserKey = document.getElementById("editUserKey");
 const profileView = document.getElementById("profileView");
 const updateUserButton = document.getElementById("updateUserButton");
+const serviceView = document.getElementById("servicesView");
+const menuServices = document.getElementById("menuServices");
+const historyButton = document.getElementById("historyButton");
+const errorBox = document.getElementById("errors");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
 profileView.style.display = "none";
-// const menuLinks = document.querySelectorAll('.menu-list a');
+serviceView.style.display = "none";
 
 function checkUser() {
     matchBox.innerHTML = `<p class="has-text-info">logged in as ${application.user.email}</p>`;
@@ -31,50 +34,79 @@ function checkUser() {
         loginScreen.style.display = "block";
         mainSection.style.display = "none";
         profileView.style.display = "none";
+        serviceView.style.display = "none";
     } else {
         loginScreen.style.display = "none";
         mainSection.style.display = "block";
         profileView.style.display = "none";
+        serviceView.style.display = "none";
     }
 }
 
 async function checkErrors() {
+    errorBox.innerHTML = "";
     if (application.errors.length > 0) {
-        for (let error of application.errors) {
-            matchBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
+        const errors = removeDupsWithSet(application.errors);
+        for (let error of errors) {
+            errorBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
         }
     }
 }
 
-
 setInterval(() => {
-    // checkUser();
     checkErrors();
     try {
+        if (application.user.email === "" && application.user.key === "") {
+            application.fetchUser();
+        } else {
+            application.getServices();
+            // application.fetchHistory();
+        }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
+                const uniq = `details-${result.link}`
                 matchBox.innerHTML += `<article class="message is-dark">
                 <div class="message-header ${result.background}">
                     <p>${result.from}</p>
-                    <button class="delete" aria-label="delete"></button>
+                    <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
                     </div>
                     <div class="message-body has-background-dark-ter">
                     <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
                     <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
-                    <p class="has-text-white">link: <span class="has-text-white">${result.link}</span></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
                     </div>
                     </article>`;
+                if (uniq === "details-undefined") {
+                    const btn = document.getElementById(uniq);
+                    btn.disabled = true;
+                }
+
+                // const thisLink = result.link;
             }
+            const buttons = document.querySelectorAll('.view-button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bid = e.target.id;
+                    const thisLink = bid.replace("details-", "");
+                    try {
+                        await application.fetchDetails(thisLink);
+                        const newTab = window.open();
+                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                    } catch (error) {
+                        application.errors.push(error);
+                    }
+
+                });
+            });
             if (application.resultWorkers.length === 0) {
-                application.results = [];
+                application.setHistory();
             }
         }
     } catch (error) {
-        console.log(error); 
+        console.log(error);
     }
 }, 3300);
 
@@ -109,11 +141,61 @@ menuProfile.addEventListener("click", (e) => {
     editUserKey.value = application.user.key;
     loginScreen.style.display = "none";
     mainSection.style.display = "none";
+    serviceView.style.display = "none";
     profileView.style.display = "block";
     updateUserButton.addEventListener("click", () => {
         application.setUserData(editUserEmail.value, editUserKey.value);
         checkUser();
     });
+});
+
+historyButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    loginScreen.style.display = "none";
+    mainSection.style.display = "block";
+    profileView.style.display = "none";
+    serviceView.style.display = "none";
+    matchBox.innerHTML = `<p class="has-text-info">application history is ${application.resultHistory.length}</p>`;
+    // if (application.history === undefined) {
+    //     application.history = [];
+    //     checkUser();
+    // }
+    for (let result of application.resultHistory) {
+        const uniq = `details-${result.link}`
+        // application.errors.push(uniq);
+        matchBox.innerHTML += `<article class="message is-dark">
+        <div class="message-header ${result.background}">
+            <p>${result.from}</p>
+            <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
+            </div>
+            <div class="message-body has-background-dark-ter">
+            <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
+            <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
+            <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
+            <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
+            <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
+            </div>
+            </article>`;
+        if (uniq === "details-undefined") {
+            const btn = document.getElementById(uniq);
+            btn.disabled = true;
+        }
+    }
+    const buttons = document.querySelectorAll('.view-button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bid = e.target.id;
+                    const thisLink = bid.replace("details-", "");
+                    try {
+                        await application.fetchDetails(thisLink);
+                        const newTab = window.open();
+                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                    } catch (error) {
+                        application.errors.push(error);
+                    }
+
+                });
+            });
 });
 
 searchButton.addEventListener("click", async () => {
@@ -129,7 +211,7 @@ searchButton.addEventListener("click", async () => {
         }
         allMatches.push(matchPair);
     }
-    
+
     for (let svr of application.servers) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
@@ -154,17 +236,75 @@ loginButton.addEventListener("click", () => {
     checkUser();
 });
 
+menuServices.addEventListener("click", (e) => {
+    e.preventDefault();
+    // editUserEmail.value = application.user.email;
+    // editUserKey.value = application.user.key;
+    loginScreen.style.display = "none";
+    mainSection.style.display = "none";
+    profileView.style.display = "none";
+    serviceView.style.display = "block";
+
+
+    // Insert cards into the card list
+    const cardList = document.getElementById('cardList');
+    application.servers.forEach(data => {
+        // cardList.innerHTML += application.user.services.length;
+        // cardList.innerHTML = "";
+        data.checked = false;
+        try {
+            application.user.services.forEach(s => {
+                if (s.kind === data.kind) {
+                    data.checked = true;
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        const cardElement = createServiceCard(data);
+        cardList.appendChild(cardElement);
+    });
+});
+
+function createServiceCard(service) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.classList.add('has-background-dark');
+    // let checkedValue = checked ? "checked" : "";
+    card.innerHTML = `
+        <header class="card-header">
+            <div class="containerCheckBox">
+                <p class="card-header-title">${service.kind}</p>
+                <button class="button add-button is-warning is-outlined">${service.checked ? 'Remove' : 'Add'}</button> 
+            </div>
+        </header>
+        <div class="card-content has-background-black">
+            <div class="content has-text-link-light">
+                <p>${service.type}</p>
+            </div>
+        </div>
+    `;
+    const addButton = card.querySelector('.add-button');
+    addButton.textContent = service.checked ? 'Remove' : 'Add';
+    addButton.addEventListener('click', () => {
+        if (service.checked) {
+            application.removeService(service);
+            application.updateUser(application.user);
+            service.checked = false;
+        } else {
+            application.addService(service);
+            application.updateUser(application.user);
+            service.checked = true;
+        }
+        addButton.textContent = service.checked ? 'Remove' : 'Add';
+    });
+
+    return card;
+}
+
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
 }
 
-// function seatActiveLink(link) {
-//     menuLinks.forEach(l => {
-//         l.classList.remove("is-active");
-//     });
-//     link.classList.add("is-active");
-// }
 
-
-  
