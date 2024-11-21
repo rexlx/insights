@@ -1,7 +1,6 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
 const apiUrl = "http://localhost:8081/";
-const apiKey = "1234567890";
 let application = new Application(apiUrl, apiKey);
 application.init();
 let contextualizer = new Contextualizer();
@@ -14,7 +13,6 @@ const loginScreen = document.getElementById("loginScreen");
 const loginButton = document.getElementById("loginButton");
 const userEmail = document.getElementById("userEmail");
 const userKey = document.getElementById("userKey");
-const loginInfo = document.getElementById("loginInfo");
 const menuProfile = document.getElementById("menuProfile");
 const editUserEmail = document.getElementById("editUserEmail");
 const editUserKey = document.getElementById("editUserKey");
@@ -24,16 +22,11 @@ const serviceView = document.getElementById("servicesView");
 const menuServices = document.getElementById("menuServices");
 const historyButton = document.getElementById("historyButton");
 const errorBox = document.getElementById("errors");
-// const viewButtons = document.querySelectorAll('.view-button');
-// const serviceView =  document.getElementById("servicesView");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
 profileView.style.display = "none";
 serviceView.style.display = "none";
-
-// await application.getServices();
-// const menuLinks = document.querySelectorAll('.menu-list a');
 
 function checkUser() {
     matchBox.innerHTML = `<p class="has-text-info">logged in as ${application.user.email}</p>`;
@@ -60,10 +53,7 @@ async function checkErrors() {
     }
 }
 
-// <p class="has-text-white">link: <a href="${result.link}" target="_blank" rel="noopener noreferrer"><span class="has-text-white">${result.link}</span></a></p>
-
 setInterval(() => {
-    // checkUser();
     checkErrors();
     try {
         if (application.user.email === "" && application.user.key === "") {
@@ -316,12 +306,5 @@ function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
 }
-
-// function seatActiveLink(link) {
-//     menuLinks.forEach(l => {
-//         l.classList.remove("is-active");
-//     });
-//     link.classList.add("is-active");
-// }
 
 
