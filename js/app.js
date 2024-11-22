@@ -6,6 +6,7 @@ export class Application {
             if (result.user) {
                 let x = result.user;
                 this.setUserData(x.email, x.key);
+                this.init();
             }
         });
         this.resultWorkers = [];
@@ -99,7 +100,6 @@ export class Application {
             "type": type,
             "route": route
         }
-        console.log("got message", proxyRequest);
         let response = await fetch(thisURL, {
             method: 'POST',
             headers: {
@@ -109,7 +109,6 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
-        this.results.push(data);
         if (this.resultHistory.length > 24) {
             let num2Rm = this.resultHistory.length - 24;
             this.resultHistory.splice(0, num2Rm);

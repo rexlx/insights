@@ -1,8 +1,8 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
 const apiUrl = "http://localhost:8081/";
-let application = new Application(apiUrl, apiKey);
-application.init();
+let application = new Application(apiUrl, "none");
+// application.init();
 let contextualizer = new Contextualizer();
 
 const matchBox = document.getElementById("matchBox");
@@ -215,8 +215,8 @@ searchButton.addEventListener("click", async () => {
     for (let svr of application.servers) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
-                if (svr.routeMap) {
-                    svr.route = getRouteByType(svr.routeMap, matchPair.type);
+                if (svr.route_map) {
+                    svr.route = getRouteByType(svr.route_map, matchPair.type);
                 } else {
                     svr.route = "";
                 }
