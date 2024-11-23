@@ -22,6 +22,7 @@ const serviceView = document.getElementById("servicesView");
 const menuServices = document.getElementById("menuServices");
 const historyButton = document.getElementById("historyButton");
 const errorBox = document.getElementById("errors");
+// const downloadResultsButton = document.getElementById("downloadResultsButton");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
@@ -86,6 +87,7 @@ setInterval(() => {
 
                 // const thisLink = result.link;
             }
+            matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
             const buttons = document.querySelectorAll('.view-button');
             buttons.forEach(btn => {
                 btn.addEventListener('click', async (e) => {
@@ -100,6 +102,17 @@ setInterval(() => {
                     }
 
                 });
+            });
+            const downloadResultsButton = document.getElementById("downloadResultsButton");
+            downloadResultsButton.addEventListener("click", () => {
+                // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
+                // const url = URL.createObjectURL(true);
+                // const a = document.createElement('a');
+                // a.href = url;
+                // a.download = 'results.json';
+                // a.click();
+                // URL.revokeObjectURL(url);
+                application.saveResultsToCSV(true);
             });
             if (application.resultWorkers.length === 0) {
                 application.setHistory();
@@ -181,6 +194,7 @@ historyButton.addEventListener("click", (e) => {
             btn.disabled = true;
         }
     }
+    matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
     const buttons = document.querySelectorAll('.view-button');
             buttons.forEach(btn => {
                 btn.addEventListener('click', async (e) => {
@@ -195,6 +209,17 @@ historyButton.addEventListener("click", (e) => {
                     }
 
                 });
+            });
+            const downloadResultsButton = document.getElementById("downloadResultsButton");
+            downloadResultsButton.addEventListener("click", () => {
+                // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
+                // const url = URL.createObjectURL(true);
+                // const a = document.createElement('a');
+                // a.href = url;
+                // a.download = 'results.json';
+                // a.click();
+                // URL.revokeObjectURL(url);
+                application.saveResultsToCSV(true);
             });
 });
 

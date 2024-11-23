@@ -151,6 +151,30 @@ export class Application {
         this.results = [];
         // this.resultWorkers.pop();
     }
+    async saveResultsToCSV(includeHisotry) {
+        let rightFreakinNow = new Date();
+        const filename = `results-${rightFreakinNow.getFullYear()}-${rightFreakinNow.getMonth() + 1}-${rightFreakinNow.getDate()}.csv`;
+        let csvContent = "data:text/csv;charset=utf-8,";
+        let header = `server-id,local-id,value,from,matched,info\n`;
+        csvContent += header;
+        let data = this.results;
+        if (includeHisotry) {
+            data.push(...this.resultHistory);
+        }
+        data.forEach((result) => {
+            if (result.info.includes(",")) {
+                result.info = result.info.replaceAll(",", " - ");
+            }
+            let row = `${result.link},${result.id},${result.value},${result.from},${result.matched},${result.info}\n`;
+            csvContent += row;
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+    }
     fetchHistory() {
         try {
           chrome.storage.local.get(["history"], (result) => {
