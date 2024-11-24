@@ -134,7 +134,6 @@ export class Application {
     }
     setHistory() {
         if (this.resultHistory.length === 0) {
-            this.errors.push("No results to save");
             return;
         }
         if (this.resultHistory.length > 24) {
@@ -146,7 +145,7 @@ export class Application {
                 console.log("History saved");
             });
         } catch (err) {
-            this.errors.push("Error saving history");
+            this.errors.push(`Error saving history: ${err}`);
         }
         this.results = [];
         // this.resultWorkers.pop();
