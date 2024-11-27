@@ -31,10 +31,18 @@ export class Application {
             this.user.services = [];
         }
         this.user.services.push(service);
+        this.updateUser(this.user);
     }
     removeService(service) {
         if (this.user.services) {
-            this.user.services = this.user.services.filter((x) => x !== service);
+            let tmp = [];
+            this.user.services.forEach((s) => {
+                if (s.kind !== service.kind) {
+                    tmp.push(s);
+                }
+            });
+            this.user.services = tmp;
+            this.updateUser(this.user);
         }
         // this.user.services = this.servers;
     }
@@ -121,10 +129,6 @@ export class Application {
         return data;
     }
     async getServices() {
-        if (!this.initialized) {
-            await this.fetchUser();
-            this.initialized = true;
-        }
         let thisURL = this.apiUrl + `getservices`
         let response = await fetch(thisURL, {
             method: 'GET',
@@ -181,7 +185,7 @@ export class Application {
     fetchHistory() {
         try {
           chrome.storage.local.get(["history"], (result) => {
-            if (result) {
+            if (result && result.history) {
               let x = result.history;
             //   this.errors.push(JSON.stringify(x));
               this.resultHistory.push(...x);

@@ -263,19 +263,14 @@ loginButton.addEventListener("click", () => {
 
 menuServices.addEventListener("click", (e) => {
     e.preventDefault();
-    // editUserEmail.value = application.user.email;
-    // editUserKey.value = application.user.key;
     loginScreen.style.display = "none";
     mainSection.style.display = "none";
     profileView.style.display = "none";
     serviceView.style.display = "block";
 
 
-    // Insert cards into the card list
     const cardList = document.getElementById('cardList');
     application.servers.forEach(data => {
-        // cardList.innerHTML += application.user.services.length;
-        // cardList.innerHTML = "";
         data.checked = false;
         try {
             application.user.services.forEach(s => {
@@ -299,7 +294,7 @@ function createServiceCard(service) {
     card.innerHTML = `
         <header class="card-header">
             <div class="containerCheckBox">
-                <p class="card-header-title">${service.kind}</p>
+                <p class="card-header-title has-text-white">${service.kind}</p>
                 <button class="button add-button is-warning is-outlined">${service.checked ? 'Remove' : 'Add'}</button> 
             </div>
         </header>
