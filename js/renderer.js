@@ -237,7 +237,7 @@ searchButton.addEventListener("click", async () => {
         allMatches.push(matchPair);
     }
 
-    for (let svr of application.servers) {
+    for (let svr of application.user.services) {
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
                 if (svr.route_map) {

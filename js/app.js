@@ -27,12 +27,16 @@ export class Application {
         });
     }
     addService(service) {
-        this.servers.push(service);
-        this.user.services = this.servers;
+        if (!this.user.services) {
+            this.user.services = [];
+        }
+        this.user.services.push(service);
     }
     removeService(service) {
-        this.servers = this.servers.filter(s => s.kind !== service.kind);
-        this.user.services = this.servers;
+        if (this.user.services) {
+            this.user.services = this.user.services.filter((x) => x !== service);
+        }
+        // this.user.services = this.servers;
     }
     async fetchUser() {
         let thisURL = this.apiUrl + `user`
