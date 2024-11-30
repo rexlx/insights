@@ -112,6 +112,7 @@ export class Application {
             "type": type,
             "route": route
         }
+        // console.log("sending request: ", proxyRequest);
         let response = await fetch(thisURL, {
             method: 'POST',
             headers: {

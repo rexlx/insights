@@ -78,6 +78,7 @@ setInterval(() => {
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
+                    <p class="has-text-white">info: <span class="has-text-white">${result.link}</span></p>
                     </div>
                     </article>`;
                 if (uniq === "details-undefined") {
@@ -187,6 +188,7 @@ historyButton.addEventListener("click", (e) => {
             <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
             <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
             <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
+            <p class="has-text-white">info: <span class="has-text-white">${result.link}</span></p>
             </div>
             </article>`;
         if (uniq === "details-undefined") {
@@ -237,7 +239,12 @@ searchButton.addEventListener("click", async () => {
         allMatches.push(matchPair);
     }
 
+    const sent = [];
     for (let svr of application.user.services) {
+        if (sent.includes(svr.kind)) {
+            continue;
+        }
+        sent.push(svr.kind);
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
                 if (svr.route_map) {
