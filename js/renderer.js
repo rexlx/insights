@@ -22,6 +22,7 @@ const serviceView = document.getElementById("servicesView");
 const menuServices = document.getElementById("menuServices");
 const historyButton = document.getElementById("historyButton");
 const errorBox = document.getElementById("errors");
+const goToButton = document.getElementById("goToButton");
 // const downloadResultsButton = document.getElementById("downloadResultsButton");
 
 loginScreen.style.display = "none";
@@ -198,31 +199,31 @@ historyButton.addEventListener("click", (e) => {
     }
     matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
     const buttons = document.querySelectorAll('.view-button');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const bid = e.target.id;
-                    const thisLink = bid.replace("details-", "");
-                    try {
-                        await application.fetchDetails(thisLink);
-                        const newTab = window.open();
-                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
-                    } catch (error) {
-                        application.errors.push(error);
-                    }
+    buttons.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const bid = e.target.id;
+            const thisLink = bid.replace("details-", "");
+            try {
+                await application.fetchDetails(thisLink);
+                const newTab = window.open();
+                newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+            } catch (error) {
+                application.errors.push(error);
+            }
 
-                });
-            });
-            const downloadResultsButton = document.getElementById("downloadResultsButton");
-            downloadResultsButton.addEventListener("click", () => {
-                // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
-                // const url = URL.createObjectURL(true);
-                // const a = document.createElement('a');
-                // a.href = url;
-                // a.download = 'results.json';
-                // a.click();
-                // URL.revokeObjectURL(url);
-                application.saveResultsToCSV(true);
-            });
+        });
+    });
+    const downloadResultsButton = document.getElementById("downloadResultsButton");
+    downloadResultsButton.addEventListener("click", () => {
+        // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
+        // const url = URL.createObjectURL(true);
+        // const a = document.createElement('a');
+        // a.href = url;
+        // a.download = 'results.json';
+        // a.click();
+        // URL.revokeObjectURL(url);
+        application.saveResultsToCSV(true);
+    });
 });
 
 searchButton.addEventListener("click", async () => {
@@ -329,9 +330,34 @@ function createServiceCard(service) {
     return card;
 }
 
+goToButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    let inputDiv = `<div class="field">
+    <label class="label">enter id</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="id" id="goToValue">
+      </div>
+      <div class="field">
+            <div class="control">
+                <button class="button is-primary" id="goButton">Go</button>
+            </div>
+      </div>`;
+    matchBox.innerHTML = inputDiv;
+    const goButton = document.getElementById("goButton");
+    const goToValue = document.getElementById("goToValue");
+    goButton.addEventListener("click", async () => {
+        await application.fetchDetails(goToValue.value);
+        const newBody = document.implementation.createHTMLDocument(goToValue.value);
+        const style = newBody.createElement("style");
+        style.innerHTML = "body { background-color: #333; color: #fff; }";
+        const newTab = window.open();
+        newBody.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+        newTab.document.body.innerHTML = newBody.body.innerHTML;
+    });
+});
+
+
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
 }
-
-
