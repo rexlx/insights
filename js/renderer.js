@@ -23,6 +23,7 @@ const menuServices = document.getElementById("menuServices");
 const historyButton = document.getElementById("historyButton");
 const errorBox = document.getElementById("errors");
 const goToButton = document.getElementById("goToButton");
+const uploadButton = document.getElementById("uploadButton");
 // const downloadResultsButton = document.getElementById("downloadResultsButton");
 
 loginScreen.style.display = "none";
@@ -356,6 +357,68 @@ goToButton.addEventListener("click", async (e) => {
     });
 });
 
+// uploadButton.addEventListener("click", async (e) => {
+//     e.preventDefault();
+//     const fileInput = document.createElement("input");
+//     fileInput.type = "file";
+//     fileInput.accept = ".txt";
+//     fileInput.addEventListener("change", async (e) => {
+//         const file = fileInput.files[0];
+//         const reader = new FileReader();
+//         reader.onload = async (e) => {
+//             const text = e.target.result;
+//             userSearch.value = text;
+//         };
+//         reader.readAsText(file);
+//     });
+//     fileInput.click();
+//     console.log("uploading...");
+// });
+
+uploadButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    // Remove or comment out the 'accept' attribute to allow any file type
+    // fileInput.accept = ".txt"; 
+
+    fileInput.addEventListener("change", async (e) => {
+        const file = fileInput.files[0];
+
+        if (!file) {
+            console.error("No file selected.");
+            return; 
+        }
+        // set file name to a unique name
+        // file.name = makeUnique(file.name);
+        const newFile = new File([file], makeUnique(file.name), { type: file.type });
+        // For binary files, read as an ArrayBuffer
+        await application.uploadFile(newFile);
+        // const reader = new FileReader();
+
+        // reader.onload = async (e) => {
+        //     const arrayBuffer = e.target.result; 
+
+        // };
+
+        // reader.onerror = (e) => {
+        //     console.error("Error reading file:", e);
+        // };
+
+        // reader.readAsArrayBuffer(file); // Read as ArrayBuffer
+    });
+
+    fileInput.click();
+});
+
+function makeUnique(filename) {
+    let [fh, ext] = filename.split("."); 
+    if (fh === undefined) {
+        return `${ext}-${Date.now()}`;
+    }
+    console.log(`modifying filename: ${filename}`, fh, ext);
+    return `${fh}-${Date.now()}.${ext}`;
+}
 
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);

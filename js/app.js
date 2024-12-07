@@ -46,6 +46,50 @@ export class Application {
         }
         // this.user.services = this.servers;
     }
+    async uploadFile(file) {
+        const thisURL = this.apiUrl + `upload`;
+        const chunkSize = 1024 * 1024; // 1MB
+        let currentChunk = 0;
+      
+        const uploadChunk = async () => { 
+          const start = currentChunk * chunkSize;
+          const end = Math.min(start + chunkSize, file.size);
+          const chunk = file.slice(start, end);
+      
+          try {
+            const response = await fetch(thisURL, {
+              method: 'POST',
+              headers: {
+                // 'Content-Type': 'application/json', // Remove if sending binary data
+                'Content-Range': `bytes ${start}-${end - 1}/${file.size}`, 
+                'X-filename': file.name,
+                'X-last-chunk': currentChunk === Math.ceil(file.size / chunkSize) - 1,
+                'Authorization': `${this.user.email}:${this.user.key}`
+              },
+              body: chunk
+            });
+      
+            if (!response.ok) {
+              console.error('Error uploading chunk:', response.status);
+              // ... Handle error, potentially retry the chunk ...
+            } else {
+              currentChunk++;
+              if (currentChunk < Math.ceil(file.size / chunkSize)) {
+                uploadChunk(); // Recursive call for next chunk
+              } else {
+                console.log('File uploaded successfully!');
+                // ... Do something after successful upload ...
+              }
+            }
+      
+          } catch (error) {
+            console.error('Error uploading chunk:', error);
+            // ... Handle error, potentially retry the chunk ...
+          }
+        };
+      
+        uploadChunk(); // Start the upload
+      }
     async fetchUser() {
         let thisURL = this.apiUrl + `user`
         let response = await fetch(thisURL, {
