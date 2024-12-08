@@ -56,75 +56,50 @@ async function checkErrors() {
     }
 }
 
-setInterval(() => {
+async function updateUI() {
     checkErrors();
     try {
         if (application.user.email === "" && application.user.key === "") {
-            application.fetchUser();
-        } else {
-            application.getServices();
-            // application.fetchHistory();
+            await application.fetchUser();
+            await application.getServices();
         }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
-                const uniq = `details-${result.link}`
+                const uniq = `details-${result.link}`;
                 matchBox.innerHTML += `<article class="message is-dark">
                 <div class="message-header ${result.background}">
                     <p>${result.from}</p>
                     <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
-                    </div>
-                    <div class="message-body has-background-dark-ter">
+                </div>
+                <div class="message-body has-background-dark-ter">
                     <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
                     <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
-                    <p class="has-text-white">info: <span class="has-text-white">${result.link}</span></p>
-                    </div>
-                    </article>`;
-                if (uniq === "details-undefined") {
-                    const btn = document.getElementById(uniq);
-                    btn.disabled = true;
-                }
-
-                // const thisLink = result.link;
+                </div>
+                </article>`;
             }
-            matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
-            const buttons = document.querySelectorAll('.view-button');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const bid = e.target.id;
-                    const thisLink = bid.replace("details-", "");
-                    try {
-                        await application.fetchDetails(thisLink);
-                        const newTab = window.open();
-                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
-                    } catch (error) {
-                        application.errors.push(error);
-                    }
 
+            // Add event listeners to the buttons
+            const buttons = document.querySelectorAll('.view-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const buttonId = event.target.id;
+                    console.log(`Button with id ${buttonId} clicked`);
+                    // Add your button click handling logic here
                 });
             });
-            const downloadResultsButton = document.getElementById("downloadResultsButton");
-            downloadResultsButton.addEventListener("click", () => {
-                // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
-                // const url = URL.createObjectURL(true);
-                // const a = document.createElement('a');
-                // a.href = url;
-                // a.download = 'results.json';
-                // a.click();
-                // URL.revokeObjectURL(url);
-                application.saveResultsToCSV(true);
-            });
-            if (application.resultWorkers.length === 0) {
-                application.setHistory();
-            }
         }
     } catch (error) {
-        console.log(error);
+        console.error('Error in updateUI:', error);
     }
-}, 3300);
+    requestAnimationFrame(updateUI);
+}
+
+// Start the update loop
+requestAnimationFrame(updateUI);
 
 function getRouteByType(routeMap, type) {
     for (let route of routeMap) {

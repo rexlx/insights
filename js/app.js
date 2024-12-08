@@ -55,7 +55,8 @@ export class Application {
           const start = currentChunk * chunkSize;
           const end = Math.min(start + chunkSize, file.size);
           const chunk = file.slice(start, end);
-      
+          const progress = Math.ceil((end / file.size) * 100);
+          let progressBar = `<progress class="progress" value="${progress}" max="100"></progress>`;
           try {
             const response = await fetch(thisURL, {
               method: 'POST',
@@ -75,8 +76,13 @@ export class Application {
             } else {
               currentChunk++;
               if (currentChunk < Math.ceil(file.size / chunkSize)) {
+                this.errors = [];
+                this.errors.push(progressBar);
                 uploadChunk(); // Recursive call for next chunk
               } else {
+                let progressBar = `<p class="has-text-info">uploaded ${file.name}</p>`;
+                this.errors = [];
+                this.errors.push(progressBar);
                 console.log('File uploaded successfully!');
                 // ... Do something after successful upload ...
               }
