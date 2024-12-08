@@ -59,10 +59,6 @@ async function checkErrors() {
 async function updateUI() {
     checkErrors();
     try {
-        if (application.user.email === "" && application.user.key === "") {
-            await application.fetchUser();
-            await application.getServices();
-        }
         if (application.results.length > 0) {
             matchBox.innerHTML = "";
             for (let result of application.results) {
@@ -245,8 +241,9 @@ loginButton.addEventListener("click", () => {
     checkUser();
 });
 
-menuServices.addEventListener("click", (e) => {
+menuServices.addEventListener("click", async (e) => {
     e.preventDefault();
+    await application.getServices();
     loginScreen.style.display = "none";
     mainSection.style.display = "none";
     profileView.style.display = "none";
