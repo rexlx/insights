@@ -77,7 +77,7 @@ async function updateUI() {
                 </div>
                 </article>`;
             }
-
+            application.setHistory();
             // Add event listeners to the buttons
             const buttons = document.querySelectorAll('.view-button');
             buttons.forEach(button => {
