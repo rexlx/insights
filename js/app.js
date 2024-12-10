@@ -50,52 +50,56 @@ export class Application {
         const thisURL = this.apiUrl + `upload`;
         const chunkSize = 1024 * 1024; // 1MB
         let currentChunk = 0;
-      
-        const uploadChunk = async () => { 
-          const start = currentChunk * chunkSize;
-          const end = Math.min(start + chunkSize, file.size);
-          const chunk = file.slice(start, end);
-          const progress = Math.ceil((end / file.size) * 100);
-          let progressBar = `<progress class="progress" value="${progress}" max="100"></progress>`;
-          try {
-            const response = await fetch(thisURL, {
-              method: 'POST',
-              headers: {
-                // 'Content-Type': 'application/json', // Remove if sending binary data
-                'Content-Range': `bytes ${start}-${end - 1}/${file.size}`, 
-                'X-filename': file.name,
-                'X-last-chunk': currentChunk === Math.ceil(file.size / chunkSize) - 1,
-                'Authorization': `${this.user.email}:${this.user.key}`
-              },
-              body: chunk
-            });
-      
-            if (!response.ok) {
-              console.error('Error uploading chunk:', response.status);
-              // ... Handle error, potentially retry the chunk ...
-            } else {
-              currentChunk++;
-              if (currentChunk < Math.ceil(file.size / chunkSize)) {
-                this.errors = [];
-                this.errors.push(progressBar);
-                uploadChunk(); // Recursive call for next chunk
-              } else {
-                let progressBar = `<p class="has-text-info">uploaded ${file.name}</p>`;
-                this.errors = [];
-                this.errors.push(progressBar);
-                console.log('File uploaded successfully!');
-                // ... Do something after successful upload ...
-              }
+
+        const uploadChunk = async () => {
+            const start = currentChunk * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            const chunk = file.slice(start, end);
+            const progress = Math.ceil((end / file.size) * 100);
+            let progressBar = `<progress class="progress" value="${progress}" max="100"></progress>`;
+            try {
+                const response = await fetch(thisURL, {
+                    method: 'POST',
+                    headers: {
+                        // 'Content-Type': 'application/json', // Remove if sending binary data
+                        'Content-Range': `bytes ${start}-${end - 1}/${file.size}`,
+                        'X-filename': file.name,
+                        'X-last-chunk': currentChunk === Math.ceil(file.size / chunkSize) - 1,
+                        'Authorization': `${this.user.email}:${this.user.key}`
+                    },
+                    body: chunk
+                });
+
+                if (!response.ok) {
+                    console.error('Error uploading chunk:', response.status);
+                    // ... Handle error, potentially retry the chunk ...
+                } else {
+                    currentChunk++;
+                    if (currentChunk < Math.ceil(file.size / chunkSize)) {
+                        this.errors = [];
+                        this.errors.push(progressBar);
+                        uploadChunk(); // Recursive call for next chunk
+                    } else {
+                        let progressBar = `<p class="has-text-info">uploaded ${file.name}</p>`;
+                        this.errors = [];
+                        this.errors.push(progressBar);
+                        console.log('File uploaded successfully!');
+                        const data = await response.json();
+                        if (data && data.id) {
+                            this.errors.push(`${data.id} uploaded!`);
+                            // ... Do something after successful upload ...
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error uploading chunk:', error);
+                // ... Handle error, potentially retry the chunk ...
             }
-      
-          } catch (error) {
-            console.error('Error uploading chunk:', error);
-            // ... Handle error, potentially retry the chunk ...
-          }
         };
-      
+
         uploadChunk(); // Start the upload
-      }
+    }
     async fetchUser() {
         let thisURL = this.apiUrl + `user`
         let response = await fetch(thisURL, {
@@ -235,22 +239,22 @@ export class Application {
     }
     fetchHistory() {
         try {
-          chrome.storage.local.get(["history"], (result) => {
-            if (result && result.history) {
-              let x = result.history;
-            //   this.errors.push(JSON.stringify(x));
-              this.resultHistory.push(...x);
-            } else {
-              this.errors.push("No history found in storage.");
-            }
-          }); // Ensure 'this' refers to the class instance
+            chrome.storage.local.get(["history"], (result) => {
+                if (result && result.history) {
+                    let x = result.history;
+                    //   this.errors.push(JSON.stringify(x));
+                    this.resultHistory.push(...x);
+                } else {
+                    this.errors.push("No history found in storage.");
+                }
+            }); // Ensure 'this' refers to the class instance
         } catch (err) {
-          this.errors.push("Error fetching history: " + err);
+            this.errors.push("Error fetching history: " + err);
         }
-      }
-      init() {
+    }
+    init() {
         this.fetchUser();
         this.fetchHistory();
         this.getServices();
-      }
+    }
 }
