@@ -87,6 +87,8 @@ export class Application {
                         const data = await response.json();
                         if (data && data.id) {
                             let newResult = {
+                                "background": "has-background-success",
+                                "from": "uploader service",
                                 "id": data.id,
                                 "value": file.name,
                                 "link": "none",
