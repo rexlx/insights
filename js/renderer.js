@@ -95,8 +95,12 @@ async function updateUI() {
                     } catch (error) {
                         application.errors.push(error);
                     }
-        
+
                 });
+            });
+            const downloadResultsButton = document.getElementById("downloadResultsButton");
+            downloadResultsButton.addEventListener("click", () => {
+                application.saveResultsToCSV(true);
             });
         }
     } catch (error) {
@@ -198,13 +202,6 @@ historyButton.addEventListener("click", (e) => {
     });
     const downloadResultsButton = document.getElementById("downloadResultsButton");
     downloadResultsButton.addEventListener("click", () => {
-        // const blob = new Blob([JSON.stringify(application.results, null, 2)], { type: "application/json" });
-        // const url = URL.createObjectURL(true);
-        // const a = document.createElement('a');
-        // a.href = url;
-        // a.download = 'results.json';
-        // a.click();
-        // URL.revokeObjectURL(url);
         application.saveResultsToCSV(true);
     });
 });
@@ -370,7 +367,7 @@ uploadButton.addEventListener("click", async (e) => {
 
         if (!file) {
             console.error("No file selected.");
-            return; 
+            return;
         }
         // set file name to a unique name
         // file.name = makeUnique(file.name);
@@ -395,7 +392,7 @@ uploadButton.addEventListener("click", async (e) => {
 });
 
 function makeUnique(filename) {
-    let [fh, ext] = filename.split("."); 
+    let [fh, ext] = filename.split(".");
     if (fh === undefined) {
         return `${ext}-${Date.now()}`;
     }
