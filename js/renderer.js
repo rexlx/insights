@@ -392,12 +392,13 @@ uploadButton.addEventListener("click", async (e) => {
 });
 
 function makeUnique(filename) {
-    let [fh, ext] = filename.split(".");
-    if (fh === undefined) {
-        return `${ext}-${Date.now()}`;
+    const parts = filename.split(".");
+    if (parts.length === 1) {
+        return `${parts[0]}_${Date.now()}`;
     }
-    console.log(`modifying filename: ${filename}`, fh, ext);
-    return `${fh}-${Date.now()}.${ext}`;
+    const ext = parts.pop();
+    const name = parts.join(".");
+    return `${name}_${Date.now()}.${ext}`;
 }
 
 function removeDupsWithSet(arr) {
