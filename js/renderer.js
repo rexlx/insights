@@ -47,8 +47,10 @@ function checkUser() {
 }
 
 async function checkErrors() {
+    let previousResults = [];
     errorBox.innerHTML = "";
-    if (application.errors.length > 0) {
+    if (application.errors.length > 0 && JSON.stringify(application.errors) !== JSON.stringify(previousResults)) {
+        previousResults = [...application.errors];
         const errors = removeDupsWithSet(application.errors);
         for (let error of errors) {
             errorBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
