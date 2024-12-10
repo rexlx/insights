@@ -86,7 +86,15 @@ export class Application {
                         console.log('File uploaded successfully!');
                         const data = await response.json();
                         if (data && data.id) {
-                            this.errors.push(`${data.id} uploaded!`);
+                            let newResult = {
+                                "id": data.id,
+                                "value": file.name,
+                                "link": "none",
+                                "attr_count": 0,
+                                "threat_level_id": 0,
+                                "info": `${data.id} uploaded! the end service may still be processing the file.`
+                            }
+                            this.results.push(newResult);
                             // ... Do something after successful upload ...
                         }
                     }
