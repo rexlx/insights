@@ -206,7 +206,7 @@ export class Application {
         } catch (err) {
             this.errors.push(`Error saving history: ${err}`);
         }
-        this.results = [];
+        // this.results = [];
         // this.resultWorkers.pop();
     }
     async saveResultsToCSV(includeHisotry) {

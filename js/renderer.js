@@ -56,10 +56,12 @@ async function checkErrors() {
     }
 }
 
+let previousResults = [];
 async function updateUI() {
     checkErrors();
     try {
-        if (application.results.length > 0) {
+        if (application.results.length > 0 && JSON.stringify(application.results) !== JSON.stringify(previousResults)) {
+            previousResults = [...application.results];
             matchBox.innerHTML = "";
             for (let result of application.results) {
                 const uniq = `details-${result.link}`;
@@ -71,6 +73,7 @@ async function updateUI() {
                 <div class="message-body has-background-dark-ter">
                     <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
                     <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
+                    <p class="has-text-white">server id: <span class="has-text-white">${result.link}</span></p>
                     <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
                     <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
                     <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
@@ -78,13 +81,21 @@ async function updateUI() {
                 </article>`;
             }
             application.setHistory();
+            matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
             // Add event listeners to the buttons
             const buttons = document.querySelectorAll('.view-button');
-            buttons.forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const buttonId = event.target.id;
-                    console.log(`Button with id ${buttonId} clicked`);
-                    // Add your button click handling logic here
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bid = e.target.id;
+                    const thisLink = bid.replace("details-", "");
+                    try {
+                        await application.fetchDetails(thisLink);
+                        const newTab = window.open();
+                        newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                    } catch (error) {
+                        application.errors.push(error);
+                    }
+        
                 });
             });
         }
