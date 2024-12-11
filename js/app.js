@@ -72,7 +72,6 @@ export class Application {
 
                 if (!response.ok) {
                     console.error('Error uploading chunk:', response.status);
-                    // ... Handle error, potentially retry the chunk ...
                 } else {
                     currentChunk++;
                     if (currentChunk < Math.ceil(file.size / chunkSize)) {
@@ -97,7 +96,6 @@ export class Application {
                                 "info": `${data.id} uploaded! the end service may still be processing the file.`
                             }
                             this.results.push(newResult);
-                            // ... Do something after successful upload ...
                         }
                     }
                 }
@@ -121,8 +119,6 @@ export class Application {
         });
         let data = await response.json();
         this.user = data;
-        // this.servers = this.user.services;
-        // return data;
     }
     async fetchDetails(id) {
         let thisURL = this.apiUrl + `events/${id}`
@@ -176,7 +172,6 @@ export class Application {
             "type": type,
             "route": route
         }
-        // console.log("sending request: ", proxyRequest);
         let response = await fetch(thisURL, {
             method: 'POST',
             headers: {
@@ -220,8 +215,6 @@ export class Application {
         } catch (err) {
             this.errors.push(`Error saving history: ${err}`);
         }
-        // this.results = [];
-        // this.resultWorkers.pop();
     }
     async saveResultsToCSV(includeHisotry) {
         let rightFreakinNow = new Date();
@@ -257,7 +250,7 @@ export class Application {
                 } else {
                     this.errors.push("No history found in storage.");
                 }
-            }); // Ensure 'this' refers to the class instance
+            });
         } catch (err) {
             this.errors.push("Error fetching history: " + err);
         }
