@@ -33,3 +33,7 @@ accent-color: green;
   justify-content: space-between;
 
 }
+
+.has-background-custom {
+  background-color: #0b141c;
+}

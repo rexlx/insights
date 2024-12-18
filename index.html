@@ -14,10 +14,10 @@
 
 <body>
 <!--LOGIN-->
-    <section class="section has-background-black" id="loginScreen">
-        <h1 class="title has-text-primary has-text-centered" id="extTitle">Insights</h1>
+    <section class="section has-background-custom" id="loginScreen">
+        <h1 class="title has-text-info has-text-centered" id="extTitle">Insights</h1>
         <div class="field">
-            <label class="label has-text-primary">email</label>
+            <label class="label has-text-info">email</label>
             <div class="control">
                 <input class="input" type="text" placeholder="email" id="userEmail">
 
@@ -25,7 +25,7 @@
         </div>
 
         <div class="field">
-            <label class="label has-text-primary">key</label>
+            <label class="label has-text-info">key</label>
             <div class="control">
                 <input class="input" type="text" placeholder="key" id="userKey">
             </div>
@@ -34,7 +34,7 @@
         <!-- <p class="help is-danger" id="usernameError" style="display: none;">Username or Password is incorrect</p>     -->
         <div class="field">
             <div class="control">
-                <button class="button is-primary" id="loginButton">Login</button>
+                <button class="button is-info is-outlined" id="loginButton">Login</button>
             </div>
         </div>
     </section>
@@ -49,7 +49,7 @@
         <!-- <aside class="menu"> -->
             <nav class="level is-mobile">
                 <div class="level-item" style="flex:none">
-                   <h1 class="title has-text-primary-light">insights</h1>
+                   <h1 class="title has-text-info-light">insights</h1>
                 </div>
                 <div>
                     
@@ -57,7 +57,7 @@
                 <div class="level-item"style="flex:none">
                  <!-- Hamburger Menu -->
                   <div>
-                    <a role="button" class="navbar-burger has-text-primary is-pulled-right" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="burger">
+                    <a role="button" class="navbar-burger has-text-info is-pulled-right" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" id="burger">
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
@@ -72,16 +72,16 @@
 
             <div class="navbar-menu" id = "nav-links">
                 <div>
-                    <!-- <a href="#" class="navbar-item has-text-primary has-background-black-ter" id="menuSearch">search</a> -->
-                    <a href="#" class="navbar-item has-text-primary has-background-black " id="menuServices">services</a>
-                    <a href="#" class="navbar-item has-text-primary has-background-black" id="menuProfile">profile</a>
+                    <!-- <a href="#" class="navbar-item has-text-info has-background-custom-ter" id="menuSearch">search</a> -->
+                    <a href="#" class="navbar-item has-text-info has-background-custom " id="menuServices">services</a>
+                    <a href="#" class="navbar-item has-text-info has-background-custom" id="menuProfile">profile</a>
                 </div>
 
             </div>
 
             <div class="column is-three-quarters">
-                <div class="box has-background-black-ter" id="matchBox">
-                    <h1 class="title has-text-primary">Search</h1>
+                <div class="box has-background-custom" id="matchBox">
+                    <h1 class="title has-text-info">Search</h1>
                     <form action="">
                         <div class="field">
                             <!-- <label class="label">Search</label> -->
@@ -91,15 +91,15 @@
                         </div>
                         <div class="field">
                             <div class="control">
-                                <button class="button is-primary" id="searchButton" type="submit">search</button>
+                                <button class="button is-info is-outlined" id="searchButton" type="submit">search</button>
                             </div>
                         </div>
                         <div class="field">
                             <div class="control">
                                 <div class="buttons are-small">
-                                    <button class="button is-black" id="historyButton">history</button>
-                                    <button class="button is-black" id="goToButton">go to</button>
-                                    <button class="button is-black" id="uploadButton">upload</button>
+                                    <button class="button is-black has-text-info-light" id="historyButton">history</button>
+                                    <button class="button is-black has-text-info-light" id="goToButton">go to</button>
+                                    <button class="button is-black has-text-info-light" id="uploadButton">upload</button>
                                 </div>
                             </div>
                         </div>
@@ -111,20 +111,20 @@
     </section>
 
 <!--SERVICES-->
-<section class="section has-background-black" id="servicesView">
+<section class="section has-background-custom" id="servicesView">
        
-    <h1 class="title has-text-primary">Services</h1>
+    <h1 class="title has-text-info">Services</h1>
     
     <div class="columns">
         <div class="column">
             <form>
-            <button class="button is-primary is-pulled-left">
+            <button class="button is-info is-pulled-left is-outlined">
                 <span class="icon">
                   <i class="fa fa-arrow-circle-left"></i>
                 </span>
                 <span>Back</span>
               </button>
-            <button class="button is-primary is-pulled-right" id="requestServiceButton">
+            <button class="button is-info is-pulled-right is-outlined" id="requestServiceButton">
                 <span class="icon">
                     <i class="fa fa-refresh"></i>
                   </span>
@@ -144,38 +144,38 @@
 </section>
 
 <!--PROFILE-->
-    <section class="section has-background-black" id="profileView">
+    <section class="section has-background-custom" id="profileView">
         <div class="columns">
             <div class="column">
-                <h1 class="title has-text-primary" style="margin:0px">Profile</h1>
-                <div class="box has-background-black-ter" id="profileBox">
+                <h1 class="title has-text-info" style="margin:0px">Profile</h1>
+                <div class="box has-background-custom" id="profileBox">
                     <!-- <h1 class="title">profile</h1> -->
                     <form>
                         <div class="field">
-                            <label class="label has-text-primary">Email</label>
+                            <label class="label has-text-info">Email</label>
                             <div class="control">
                                 <input class="input" type="text" placeholder="email" id="editUserEmail">
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label has-text-primary">Password</label>
+                            <label class="label has-text-info">Password</label>
                             <div class="control">
                                 <input class="input" type="password" placeholder="password" id="editUserKey">
                             </div>
                             <div class="control">
-                                <a class="is-pulled-right has-text-primary"> Lost Key? </a>
+                                <a class="is-pulled-right has-text-info"> Lost Key? </a>
                             </div>
                         </div>
                     </br>
                         <div class="field">
                             <div class="control profileButtons" >
-                                <button class="button is-primary is-pulled-left">
+                                <button class="button is-info is-pulled-left is-outlined">
                                     <span class="icon">
                                       <i class="fa fa-arrow-circle-left"></i>
                                     </span>
                                     <span>Back</span>
                                   </button>
-                                <button class="button is-primary" id="updateUserButton">
+                                <button class="button is-info is-outlined" id="updateUserButton">
                                     <span class="icon">
                                         <i class="fa fa-refresh"></i>
                                       </span>
