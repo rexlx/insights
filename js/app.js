@@ -3,16 +3,16 @@ export class Application {
         this.user = {
         };
         chrome.storage.local.get(["user", "apiUrl"], (result) => {
-            if (result.user) {
-                let x = result.user;
-                this.setUserData(x.email, x.key);
-                this.init();
-            }
             if (result.apiUrl) {
                 this.apiUrl = result.apiUrl;
             } else {
                 this.errors.push("No API URL found in storage.");
                 this.apiUrl = "http://localhost:8081/";
+            }
+            if (result.user) {
+                let x = result.user;
+                this.setUserData(x.email, x.key, this.apiUrl);
+                this.init();
             }
         });
         this.resultWorkers = [];
