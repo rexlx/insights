@@ -144,7 +144,7 @@ menuProfile.addEventListener("click", (e) => {
     serviceView.style.display = "none";
     profileView.style.display = "block";
     updateUserButton.addEventListener("click", () => {
-        application.setUserData(editUserEmail.value, editUserKey.value);
+        application.setUserData(editUserEmail.value, editUserKey.value, editServerUrl.value);
         checkUser();
     });
 });
