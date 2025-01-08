@@ -10,6 +10,9 @@ export class Application {
             }
             if (result.apiUrl) {
                 this.apiUrl = result.apiUrl;
+            } else {
+                this.errors.push("No API URL found in storage.");
+                this.apiUrl = "http://localhost:8081/";
             }
         });
         this.resultWorkers = [];
@@ -27,7 +30,7 @@ export class Application {
         this.user.key = key;
         this.apiUrl = url;
         chrome.storage.local.set({ "user": this.user, "apiUrl": url }, () => {
-            console.log("User data saved");
+            console.log("User data saved", url);
         });
         // chrome.storage.local.set({ "apiUrl": this.apiUrl }, () => {
         //     console.log("API URL saved");
