@@ -1,6 +1,6 @@
 import { Application } from "./app.js";
 import { Contextualizer } from "./parser.js";
-const apiUrl = "http://localhost:8081/";
+const apiUrl = "http://fairlady:8081/";
 let application = new Application(apiUrl, "none");
 let contextualizer = new Contextualizer();
 
@@ -23,6 +23,7 @@ const historyButton = document.getElementById("historyButton");
 const errorBox = document.getElementById("errors");
 const goToButton = document.getElementById("goToButton");
 const uploadButton = document.getElementById("uploadButton");
+const editServerUrl = document.getElementById("editServerUrl");
 
 loginScreen.style.display = "none";
 mainSection.style.display = "block";
@@ -137,6 +138,7 @@ menuProfile.addEventListener("click", (e) => {
     e.preventDefault();
     editUserEmail.value = application.user.email;
     editUserKey.value = application.user.key;
+    editServerUrl.value = application.apiUrl;
     loginScreen.style.display = "none";
     mainSection.style.display = "none";
     serviceView.style.display = "none";

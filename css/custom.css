@@ -37,3 +37,16 @@ accent-color: green;
 .has-background-custom {
   background-color: #0b141c;
 }
+
+@font-face {
+  font-family: 'Intel One Mono';
+  src: url('fonts/IntelOneMono-Regular.woff2') format('woff2'),
+      url('fonts/IntelOneMono-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+}
+body {
+  font-family: 'Intel One Mono', monospace;
+  background-color: #000;
+  color: #fff;
+}

@@ -2,11 +2,14 @@ export class Application {
     constructor(apiUrl, apiKey) {
         this.user = {
         };
-        chrome.storage.local.get(["user"], (result) => {
+        chrome.storage.local.get(["user", "apiUrl"], (result) => {
             if (result.user) {
                 let x = result.user;
                 this.setUserData(x.email, x.key);
                 this.init();
+            }
+            if (result.apiUrl) {
+                this.apiUrl = result.apiUrl;
             }
         });
         this.resultWorkers = [];
@@ -19,12 +22,16 @@ export class Application {
         this.focus = { "id": "none" };
         this.initialized = false;
     }
-    setUserData(email, key) {
+    setUserData(email, key, url) {
         this.user.email = email;
         this.user.key = key;
-        chrome.storage.local.set({ "user": this.user }, () => {
+        this.apiUrl = url;
+        chrome.storage.local.set({ "user": this.user, "apiUrl": url }, () => {
             console.log("User data saved");
         });
+        // chrome.storage.local.set({ "apiUrl": this.apiUrl }, () => {
+        //     console.log("API URL saved");
+        // });
     }
     addService(service) {
         if (!this.user.services) {

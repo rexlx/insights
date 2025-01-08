@@ -1,15 +1,14 @@
 {
     "manifest_version": 3,
     "name": "insights",
-    "description": "i provide insights",
+    "description": "search across multiple apis with a single query. threatco server required",
     "version": "1.0",
     "permissions": [
         "activeTab",  
         "storage"
   ],
   "host_permissions": [
-    "http://localhost:8080/",
-    "http://dreadco:8080/"
+    "http://localhost:8080/"
   ],
   "content_scripts": [
     {
