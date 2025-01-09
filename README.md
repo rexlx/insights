@@ -2,6 +2,9 @@
 
 search IOCs across multiple apis with a single query. requires threatco server
 
+threatco server:
+https://github.com/rexlx/threatco
+
 using intel mono fonts:
 https://github.com/intel/intel-one-mono
 
