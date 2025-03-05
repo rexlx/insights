@@ -200,15 +200,29 @@ export class Application {
     }
     async getServices() {
         let thisURL = this.apiUrl + `getservices`
-        let response = await fetch(thisURL, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${this.user.email}:${this.user.key}`
+        try {
+            let response = await fetch(thisURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${this.user.email}:${this.user.key}`
+                }
+            });
+            if (!response.ok) {
+                // this.errors.push("Error fetching services: " + response.statusText);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        });
-        let data = await response.json();
-        this.servers = data;
+            let data = await response.json();
+
+            if (!Array.isArray(data)) {
+                // this.errors.push("Error fetching services: " + JSON.stringify(data));
+                throw new Error("Error fetching services: " + JSON.stringify(data));
+            }
+
+            this.servers = data.map(sanitizeService);
+        } catch (err) {
+            this.errors.push("Error fetching services: " + err);
+        }
     }
     setHistory() {
         if (this.resultHistory.length === 0) {
@@ -269,5 +283,50 @@ export class Application {
         this.fetchUser();
         this.fetchHistory();
         this.getServices();
+    }
+}
+
+function sanitizeService(service) {
+    // Ensure service is an object; return a safe default if not
+    if (!service || typeof service !== 'object') {
+    //   console.warn('Invalid service object; returning safe default');
+      return {
+        upload_service: false,
+        expires: 0,
+        secret: "",
+        selected: false,
+        insecure: false,
+        name: "",
+        url: "",
+        rate_limited: false,
+        max_requests: 0,
+        refill_rate: 0,
+        auth_type: "",
+        key: "",
+        kind: "",
+        type: [],
+        route_map: null,
+        description: ""
+      };
+    }
+  
+    // Sanitize and normalize fields
+    return {
+      upload_service: Boolean(service.upload_service), // Force boolean
+      expires: Number.isInteger(service.expires) ? service.expires : 0, // Safe integer
+      secret: String(service.secret || ''), // String or empty
+      selected: Boolean(service.selected), // Force boolean
+      insecure: Boolean(service.insecure), // Force boolean
+      name: String(service.name || '').replace(/[<>&"'`;]/g, ''), // Strip risky chars
+      url: String(service.url || '').startsWith('http') ? service.url : '', // Basic URL check
+      rate_limited: Boolean(service.rate_limited), // Force boolean
+      max_requests: Number.isInteger(service.max_requests) ? service.max_requests : 0,
+      refill_rate: Number.isInteger(service.refill_rate) ? service.refill_rate : 0,
+      auth_type: String(service.auth_type || ''),
+      key: String(service.key || ''),
+      kind: String(service.kind || ''),
+      type: Array.isArray(service.type) ? service.type.map(String) : [], // Ensure array of strings
+      route_map: service.route_map,
+      description: String(service.description || '').replace(/[<>&"'`;]/g, '') // Strip risky chars
     }
 }
