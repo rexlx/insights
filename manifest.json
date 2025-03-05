@@ -1,10 +1,9 @@
 {
   "manifest_version": 3,
   "name": "insights",
-  "description": "search across multiple apis with a single query. threatco server required",
-  "version": "1.0",
+  "description": "search for IOC across multiple apis with a single query. threatco server required",
+  "version": "1.03",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "content_scripts": [
@@ -22,6 +21,11 @@
   ],
   "action": {
     "default_popup": "index.html",
-    "default_icon": "Icon.png"
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon64.png",
+      "128": "icon128.png"
+    }
   }
 }
