@@ -321,15 +321,36 @@ goToButton.addEventListener("click", async (e) => {
     const goButton = document.getElementById("goButton");
     const goToValue = document.getElementById("goToValue");
     goButton.addEventListener("click", async () => {
-        await application.fetchDetails(goToValue.value);
-        const newBody = document.implementation.createHTMLDocument(goToValue.value);
-        const style = newBody.createElement("style");
-        style.innerHTML = "body { background-color: #333; color: #fff; }";
-        const newTab = window.open();
-        newBody.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
-        newTab.document.body.innerHTML = newBody.body.innerHTML;
+        try {
+            await application.fetchDetails(goToValue.value);
+            if (typeof application.focus === 'object' && application.focus !== null) {
+                const newBody = document.implementation.createHTMLDocument(goToValue.value);
+                const style = newBody.createElement("style");
+                style.innerHTML = "body { background-color: #333; color: #fff; }";
+                newBody.head.appendChild(style); //append style to head.
+                const newTab = window.open();
+                const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
+                newBody.body.innerHTML = `<pre>${escapedJson}</pre>`;
+                newTab.document.head.innerHTML = newBody.document.head.innerHTML;
+                newTab.document.body.innerHTML = newBody.body.innerHTML;
+            } else {
+                throw new Error("bad data from server");
+                
+            }
+        } catch (error) {
+            application.errors.push(error);
+        }
     });
 });
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 uploadButton.addEventListener("click", async (e) => {
     e.preventDefault();
