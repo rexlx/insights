@@ -273,22 +273,48 @@ function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'card';
     card.classList.add('has-background-dark');
-    // let checkedValue = checked ? "checked" : "";
-    card.innerHTML = `
-        <header class="card-header">
-            <div class="containerCheckBox">
-                <p class="card-header-title has-text-white">${service.kind}</p>
-                <button class="button add-button is-warning is-outlined">${service.checked ? 'Remove' : 'Add'}</button> 
-            </div>
-        </header>
-        <div class="card-content has-background-black">
-            <div class="content has-text-link-light">
-                <p>${service.type}</p>
-            </div>
-        </div>
-    `;
-    const addButton = card.querySelector('.add-button');
+
+    const header = document.createElement('header');
+    header.className = 'card-header';
+
+    const containerCheckBox = document.createElement('div');
+    containerCheckBox.className = 'containerCheckBox';
+
+    const title = document.createElement('p');
+    title.className = 'card-header-title has-text-white';
+
+    // Handle service.kind as an array of strings
+    if (Array.isArray(service.kind)) {
+        const sanitizedKinds = service.kind
+            .filter(kind => typeof kind === 'string') // Filter out non-string elements
+            .map(escapeHtml) // Sanitize each string
+            .join(', '); // Join the strings with a comma
+
+        title.textContent = sanitizedKinds || 'failed to parse types'; // Use sanitizedKinds or a default message
+    } else {
+        title.textContent = 'Invalid Kind'; // Handle cases where service.kind is not an array
+    }
+
+    const addButton = document.createElement('button');
+    addButton.className = 'button add-button is-warning is-outlined';
     addButton.textContent = service.checked ? 'Remove' : 'Add';
+
+    containerCheckBox.appendChild(title);
+    containerCheckBox.appendChild(addButton);
+    header.appendChild(containerCheckBox);
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'card-content has-background-black';
+
+    const content = document.createElement('div');
+    content.className = 'content has-text-link-light';
+    content.textContent = typeof service.type === 'string' ? escapeHtml(service.type) : 'Invalid Type';
+
+    contentDiv.appendChild(content);
+
+    card.appendChild(header);
+    card.appendChild(contentDiv);
+
     addButton.addEventListener('click', () => {
         if (service.checked) {
             application.removeService(service);
@@ -304,6 +330,7 @@ function createServiceCard(service) {
 
     return card;
 }
+
 
 goToButton.addEventListener("click", async (e) => {
     e.preventDefault();
