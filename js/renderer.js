@@ -282,18 +282,7 @@ function createServiceCard(service) {
 
     const title = document.createElement('p');
     title.className = 'card-header-title has-text-white';
-
-    // Handle service.kind as an array of strings
-    if (Array.isArray(service.kind)) {
-        const sanitizedKinds = service.kind
-            .filter(kind => typeof kind === 'string') // Filter out non-string elements
-            .map(escapeHtml) // Sanitize each string
-            .join(', '); // Join the strings with a comma
-
-        title.textContent = sanitizedKinds || 'failed to parse types'; // Use sanitizedKinds or a default message
-    } else {
-        title.textContent = 'Invalid Kind'; // Handle cases where service.kind is not an array
-    }
+    title.textContent = typeof service.kind === 'string' ? escapeHtml(service.kind) : 'Invalid Kind'; //Sanitize
 
     const addButton = document.createElement('button');
     addButton.className = 'button add-button is-warning is-outlined';
@@ -308,7 +297,15 @@ function createServiceCard(service) {
 
     const content = document.createElement('div');
     content.className = 'content has-text-link-light';
-    content.textContent = typeof service.type === 'string' ? escapeHtml(service.type) : 'Invalid Type';
+    if (Array.isArray(service.type)) {
+        const sanitizedTypes = service.type
+            .filter(type => typeof type === 'string')
+            .map(type => escapeHtml(type))
+            .join(', ');
+        content.textContent = sanitizedTypes || 'failed to parse types';
+    } else {
+        content.textContent = "Invalid Type";
+    }
 
     contentDiv.appendChild(content);
 
@@ -331,6 +328,14 @@ function createServiceCard(service) {
     return card;
 }
 
+// function escapeHtml(unsafe) {
+//     return unsafe
+//         .replace(/&/g, "&amp;")
+//         .replace(/</g, "&lt;")
+//         .replace(/>/g, "&gt;")
+//         .replace(/"/g, "&quot;")
+//         .replace(/'/g, "&#039;");
+// }
 
 goToButton.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -362,7 +367,7 @@ goToButton.addEventListener("click", async (e) => {
                 newTab.document.body.innerHTML = newBody.body.innerHTML;
             } else {
                 throw new Error("bad data from server");
-                
+
             }
         } catch (error) {
             application.errors.push(error);
