@@ -158,47 +158,91 @@ historyButton.addEventListener("click", (e) => {
     matchBox.innerHTML = `<p class="has-text-info">application history is ${application.resultHistory.length}</p>`;
 
     for (let result of application.resultHistory) {
-        const uniq = `details-${result.link}`
-        matchBox.innerHTML += `<article class="message is-dark">
-        <div class="message-header ${result.background}">
-            <p>${result.from}</p>
-            <button class="button is-link is-outlined view-button" id="${uniq}">view</button>
-            </div>
-            <div class="message-body has-background-dark-ter">
-            <p class="has-text-white">match: <span class="has-text-white">${result.value}</span></p>
-            <p class="has-text-white">id: <span class="has-text-white">${result.id}</span></p>
-            <p class="has-text-white">attr_count: <span class="has-text-white">${result.attr_count}</span></p>
-            <p class="has-text-white">threat_level_id: <span class="has-text-white">${result.threat_level_id}</span></p>
-            <p class="has-text-white">info: <span class="has-text-white">${result.info}</span></p>
-            <p class="has-text-white">info: <span class="has-text-white">${result.link}</span></p>
-            </div>
-            </article>`;
-        if (uniq === "details-undefined") {
-            const btn = document.getElementById(uniq);
-            btn.disabled = true;
+        const uniq = `details-${result.link}`;
+
+        // Create message elements
+        const article = document.createElement('article');
+        article.className = 'message is-dark';
+
+        const header = document.createElement('div');
+        header.className = 'message-header';
+        if (typeof result.background === 'string') {  // Sanitize background class
+            header.classList.add(escapeHtml(result.background));
         }
-    }
-    matchBox.innerHTML += `<button class="button is-primary" id="downloadResultsButton">download</button>`;
-    const buttons = document.querySelectorAll('.view-button');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
+
+        const fromParagraph = document.createElement('p');
+        fromParagraph.textContent = escapeHtml(result.from); // Sanitize
+
+        const viewButton = document.createElement('button');
+        viewButton.className = 'button is-link is-outlined view-button';
+        viewButton.id = uniq;
+        viewButton.textContent = 'view';
+
+        header.appendChild(fromParagraph);
+        header.appendChild(viewButton);
+
+        const body = document.createElement('div');
+        body.className = 'message-body has-background-dark-ter';
+
+        // Function to create and append <p> elements with sanitized content
+        function addMessageBodyParagraph(text, value) {
+            const paragraph = document.createElement('p');
+            paragraph.className = 'has-text-white';
+            paragraph.innerHTML = `${escapeHtml(text)}: <span class="has-text-white">${escapeHtml(value)}</span>`;
+            body.appendChild(paragraph);
+        }
+
+        addMessageBodyParagraph('match', result.value);
+        addMessageBodyParagraph('id', result.id);
+        addMessageBodyParagraph('attr_count', String(result.attr_count));
+        addMessageBodyParagraph('threat_level_id', String(result.threat_level_id));
+        addMessageBodyParagraph('info', result.info);
+        addMessageBodyParagraph('info', result.link);
+
+        article.appendChild(header);
+        article.appendChild(body);
+        matchBox.appendChild(article);
+
+        if (uniq === "details-undefined") {
+            viewButton.disabled = true;
+        }
+
+        viewButton.addEventListener('click', async (e) => {
             const bid = e.target.id;
             const thisLink = bid.replace("details-", "");
             try {
+                // Validate thisLink (example - check if it's a valid URL)
                 await application.fetchDetails(thisLink);
                 const newTab = window.open();
-                newTab.document.body.innerHTML = `<pre>${JSON.stringify(application.focus, null, 2)}</pre>`;
+                const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
+                newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
+
             } catch (error) {
                 application.errors.push(error);
             }
-
         });
-    });
-    const downloadResultsButton = document.getElementById("downloadResultsButton");
-    downloadResultsButton.addEventListener("click", () => {
+    }
+
+    // Create download button
+    const downloadButton = document.createElement('button');
+    downloadButton.className = 'button is-primary';
+    downloadButton.id = 'downloadResultsButton';
+    downloadButton.textContent = 'download';
+    matchBox.appendChild(downloadButton);
+
+    downloadButton.addEventListener("click", () => {
         application.saveResultsToCSV(true);
     });
 });
+
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
 
 searchButton.addEventListener("click", async () => {
     matchBox.innerHTML = "<p>parsed text...searching...</p>";
