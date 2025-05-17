@@ -177,6 +177,7 @@ export class Application {
     async fetchMatch(to, match, type, route) {
         let thisURL = this.apiUrl + `pipe`
         const proxyRequest = {
+            "username": this.user.email,
             "to": to,
             "value": match,
             "type": type,
@@ -191,8 +192,8 @@ export class Application {
             body: JSON.stringify(proxyRequest)
         });
         let data = await response.json();
-        if (this.resultHistory.length > 24) {
-            let num2Rm = this.resultHistory.length - 24;
+        if (this.resultHistory.length > 50) {
+            let num2Rm = this.resultHistory.length - 50;
             this.resultHistory.splice(0, num2Rm);
         }
         this.resultHistory.push(data);
@@ -228,8 +229,8 @@ export class Application {
         if (this.resultHistory.length === 0) {
             return;
         }
-        if (this.resultHistory.length > 24) {
-            let num2Rm = this.resultHistory.length - 24;
+        if (this.resultHistory.length > 50) {
+            let num2Rm = this.resultHistory.length - 50;
             this.resultHistory.splice(0, num2Rm);
         }
         try {

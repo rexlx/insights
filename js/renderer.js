@@ -164,6 +164,7 @@ async function handleMatches(kind, matchPair, route) {
             application.errors.push(error);
         }
     }
+    application.setHistory()
     application.resultWorkers.pop();
 }
 
