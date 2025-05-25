@@ -118,9 +118,10 @@ async function updateUI() {
                             const newTab = window.open();
                             const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
                             newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
-                            console.error("Invalid link:", thisLink);
+                            // console.error("Invalid link:", thisLink);
                     } catch (error) {
                         application.errors.push(error);
+                        application.sendLog(error, "error in viewButton click event");
                     }
                 });
             }
@@ -155,6 +156,9 @@ function getRouteByType(routeMap, type) {
 }
 
 async function handleMatches(kind, matchPair, route) {
+    if (isPrivateIP(match)) {
+        return;
+    }
     application.resultWorkers.push(1);
     for (let match of matchPair.matches) {
         try {
@@ -467,7 +471,7 @@ uploadButton.addEventListener("click", async (e) => {
     e.preventDefault();
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-
+    application.sendLog(`uploading file ${fileInput.name}`);
     fileInput.addEventListener("change", async (e) => {
         const file = fileInput.files[0];
 
@@ -495,4 +499,48 @@ function makeUnique(filename) {
 function removeDupsWithSet(arr) {
     let unique = new Set(arr);
     return [...unique];
+}
+
+function isPrivateIP(ip) {
+    if (typeof ip !== 'string') {
+        return false;
+    }
+    const parts = ip.split('.');
+    if (parts.length !== 4) {
+        return false; // Not a valid IPv4 format (e.g. could be IPv6 or invalid)
+    }
+    // Ensure all parts are numbers and within the 0-255 range
+    const nums = parts.map(Number);
+    if (nums.some(num => isNaN(num) || num < 0 || num > 255)) {
+        return false; // Contains non-numeric parts or parts out of IPv4 range
+    }
+
+    const [p1, p2, p3, p4] = nums;
+
+    // Check for 10.0.0.0/8 (10.0.0.0 - 10.255.255.255)
+    if (p1 === 10) {
+        return true;
+    }
+
+    // Check for 172.16.0.0/12 (172.16.0.0 - 172.31.255.255)
+    if (p1 === 172 && (p2 >= 16 && p2 <= 31)) {
+        return true;
+    }
+
+    // Check for 192.168.0.0/16 (192.168.0.0 - 192.168.255.255)
+    if (p1 === 192 && p2 === 168) {
+        return true;
+    }
+
+    // Check for loopback 127.0.0.0/8 (127.0.0.0 - 127.255.255.255)
+    if (p1 === 127) {
+        return true;
+    }
+
+    // Check for APIPA 169.254.0.0/16 (169.254.0.0 - 169.254.255.255)
+    if (p1 === 169 && p2 === 254) {
+        return true;
+    }
+
+    return false;
 }

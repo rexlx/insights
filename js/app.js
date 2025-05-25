@@ -56,6 +56,40 @@ export class Application {
         }
         // this.user.services = this.servers;
     }
+    async sendLog(message) {
+        if (!this.apiUrl) {
+            this.errors.push("API URL is not set. Cannot send log.");
+            return;
+        }
+        if (!this.user || !this.user.email) {
+            this.errors.push("User email is not set. Cannot send log.");
+            return;
+        }
+
+        const thisURL = this.apiUrl + `logger`;
+        const logData = {
+            username: this.user.email,
+            message: message
+        };
+
+        try {
+            const response = await fetch(thisURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${this.user.email}:${this.user.key}`
+                },
+                body: JSON.stringify(logData)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
+            }
+        } catch (error) {
+            this.errors.push(`Error sending log: ${error.message}`);
+        }
+    }
     async uploadFile(file) {
         const thisURL = this.apiUrl + `upload`;
         const chunkSize = 1024 * 1024; // 1MB
@@ -82,6 +116,7 @@ export class Application {
 
                 if (!response.ok) {
                     console.error('Error uploading chunk:', response.status);
+                    this.sendLog(`Error uploading chunk: ${response.status}`);
                 } else {
                     currentChunk++;
                     if (currentChunk < Math.ceil(file.size / chunkSize)) {
@@ -103,7 +138,7 @@ export class Application {
                                 "link": "none",
                                 "attr_count": 0,
                                 "threat_level_id": 0,
-                                "info": `${data.id} uploaded! the end service may still be processing the file.`
+                                "info": `${data.status} uploaded! the end service may still be processing the file.`
                             }
                             this.results.push(newResult);
                         }
@@ -112,7 +147,7 @@ export class Application {
 
             } catch (error) {
                 console.error('Error uploading chunk:', error);
-                // ... Handle error, potentially retry the chunk ...
+                this.sendLog(`Error uploading chunk: ${error.message}`);
             }
         };
 
