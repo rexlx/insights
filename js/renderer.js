@@ -156,11 +156,11 @@ function getRouteByType(routeMap, type) {
 }
 
 async function handleMatches(kind, matchPair, route) {
-    if (isPrivateIP(match)) {
-        return;
-    }
     application.resultWorkers.push(1);
     for (let match of matchPair.matches) {
+        if (isPrivateIP(match)) {
+        return;
+    }
         try {
             let result = await application.fetchMatch(kind, match, matchPair.type, route);
             application.results.push(result);
@@ -283,7 +283,8 @@ function isValidUrl(string) {
     }
 }
 
-searchButton.addEventListener("click", async () => {
+searchButton.addEventListener("click", async (event) => {
+    event.preventDefault();
     matchBox.innerHTML = "<p>parsed text...searching...</p>";
     matchBox.innerHTML += `<progress class="progress is-primary" max="100"></progress>`
     const allMatches = [];
