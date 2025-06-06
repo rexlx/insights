@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "insights",
   "description": "search for IOC across multiple apis with a single query. threatco server required",
-  "version": "1.07",
+  "version": "1.1.0",
   "permissions": [
     "storage"
   ],

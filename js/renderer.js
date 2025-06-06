@@ -423,6 +423,7 @@ function createServiceCard(service) {
 
 goToButton.addEventListener("click", async (e) => {
     e.preventDefault();
+
     let inputDiv = `<div class="field">
     <label class="label">enter id</label>
     <div class="control">
@@ -434,31 +435,48 @@ goToButton.addEventListener("click", async (e) => {
             </div>
       </div>`;
     matchBox.innerHTML = inputDiv;
+
     const goButton = document.getElementById("goButton");
     const goToValue = document.getElementById("goToValue");
+
     goButton.addEventListener("click", async () => {
         try {
             await application.fetchDetails(goToValue.value);
-            if (typeof application.focus === 'object' && application.focus !== null) {
-                const newBody = document.implementation.createHTMLDocument(goToValue.value);
-                const style = newBody.createElement("style");
-                style.innerHTML = "body { background-color: #333; color: #fff; }";
-                newBody.head.appendChild(style); //append style to head.
-                const newTab = window.open();
-                const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
-                newBody.body.innerHTML = `<pre>${escapedJson}</pre>`;
-                newTab.document.head.innerHTML = newBody.document.head.innerHTML;
-                newTab.document.body.innerHTML = newBody.body.innerHTML;
-            } else {
-                throw new Error("bad data from server");
 
+            if (typeof application.focus === 'object' && application.focus !== null) {
+                const newTab = window.open('', '_blank');
+                
+                if (newTab) {
+                    newTab.document.open();
+                    newTab.document.write(`
+                        <html>
+                            <head>
+                                <title>Details for ${escapeHtml(goToValue.value)}</title>
+                                <style>
+                                    body { 
+                                        background-color: #333; 
+                                        color: #fff; 
+                                        font-family: monospace;
+                                        white-space: pre;
+                                        padding: 1em;
+                                    }
+                                </style>
+                            </head>
+                            <body>${escapeHtml(JSON.stringify(application.focus, null, 2))}</body>
+                        </html>
+                    `);
+                    newTab.document.close();
+                } else {
+                    application.errors.push("Failed to open new tab. Please check your popup blocker settings.");
+                }
+            } else {
+                throw new Error("Received bad or empty data from the server.");
             }
         } catch (error) {
-            application.errors.push(error);
+            application.errors.push(error.toString());
         }
     });
 });
-
 function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
