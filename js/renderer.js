@@ -58,6 +58,10 @@ async function checkErrors() {
 let previousResults = [];
 async function updateUI() {
     checkErrors();
+    // testing this addition to keep user informed of any long running tasks
+    if (application.resultWorkers.length > 0) {
+        errorBox.innerHTML = `<p class="has-text-info">jobs remaining ${application.resultWorkers.length}</p>`;
+    }
     try {
         if (application.results.length > 0 && JSON.stringify(application.results) !== JSON.stringify(previousResults)) {
             previousResults = [...application.results];
@@ -114,11 +118,11 @@ async function updateUI() {
                     const bid = e.target.id;
                     const thisLink = bid.replace("details-", "");
                     try {
-                            await application.fetchDetails(thisLink);
-                            const newTab = window.open();
-                            const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
-                            newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
-                            // console.error("Invalid link:", thisLink);
+                        await application.fetchDetails(thisLink);
+                        const newTab = window.open();
+                        const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
+                        newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
+                        // console.error("Invalid link:", thisLink);
                     } catch (error) {
                         application.errors.push(error);
                         application.sendLog(error, "error in viewButton click event");
@@ -159,8 +163,8 @@ async function handleMatches(kind, matchPair, route) {
     application.resultWorkers.push(1);
     for (let match of matchPair.matches) {
         if (isPrivateIP(match)) {
-        return;
-    }
+            return;
+        }
         try {
             let result = await application.fetchMatch(kind, match, matchPair.type, route);
             application.results.push(result);
@@ -298,12 +302,12 @@ searchButton.addEventListener("click", async (event) => {
         allMatches.push(matchPair);
     }
 
-    const sent = [];
+    // const sent = [];
     for (let svr of application.user.services) {
-        if (sent.includes(svr.kind)) {
-            continue;
-        }
-        sent.push(svr.kind);
+        // if (sent.includes(svr.kind)) {
+        //     continue;
+        // }
+        // sent.push(svr.kind);
         for (let matchPair of allMatches) {
             if (svr.type.includes(matchPair.type)) {
                 if (svr.route_map) {
@@ -312,6 +316,8 @@ searchButton.addEventListener("click", async (event) => {
                     svr.route = "";
                 }
                 handleMatches(svr.kind, matchPair, svr.route);
+                matchBox.innerHTML = `<p class="has-text-info">workers remaining ${application.resultWorkers.length}</p>`;
+
             }
         }
     }
@@ -445,7 +451,7 @@ goToButton.addEventListener("click", async (e) => {
 
             if (typeof application.focus === 'object' && application.focus !== null) {
                 const newTab = window.open('', '_blank');
-                
+
                 if (newTab) {
                     newTab.document.open();
                     newTab.document.write(`
