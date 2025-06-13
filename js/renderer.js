@@ -46,7 +46,9 @@ function checkUser() {
 }
 
 async function checkErrors() {
-    errorBox.innerHTML = "";
+    if (!errorBox.innerHTML.includes("jobs remaining")) {
+        errorBox.innerHTML = "";
+    }
     if (application.errors.length > 0) {
         const errors = removeDupsWithSet(application.errors);
         for (let error of errors) {
@@ -57,11 +59,18 @@ async function checkErrors() {
 
 let previousResults = [];
 async function updateUI() {
-    checkErrors();
+    errorBox.innerHTML = "";
     // testing this addition to keep user informed of any long running tasks
     if (application.resultWorkers.length > 0) {
         errorBox.innerHTML = `<p class="has-text-info">jobs remaining ${application.resultWorkers.length}</p>`;
     }
+    if (application.errors.length > 0) {
+        const errors = removeDupsWithSet(application.errors);
+        for (let error of errors) {
+            errorBox.innerHTML += `<p class="has-text-warning">${error}</p>`;
+        }
+    }
+
     try {
         if (application.results.length > 0 && JSON.stringify(application.results) !== JSON.stringify(previousResults)) {
             previousResults = [...application.results];
