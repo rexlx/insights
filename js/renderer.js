@@ -96,6 +96,10 @@ async function updateUI() {
                 viewButton.className = 'button is-link is-outlined view-button';
                 viewButton.id = uniq;
                 viewButton.textContent = 'view';
+                viewButton.title = `${escapeHtml(uniq)}`; // Add title for better accessibility
+                if (uniq === "details-undefined" || uniq === "details-none" || uniq === "details-") {
+                    viewButton.disabled = true; // Disable button if link is undefined
+                }
 
                 header.appendChild(fromParagraph);
                 header.appendChild(viewButton);
@@ -229,6 +233,9 @@ historyButton.addEventListener("click", (e) => {
         viewButton.className = 'button is-link is-outlined view-button';
         viewButton.id = uniq;
         viewButton.textContent = 'view';
+        if (uniq === "details-undefined" || uniq === "details-") {
+            viewButton.disabled = true; // Disable button if link is undefined
+        }
 
         header.appendChild(fromParagraph);
         header.appendChild(viewButton);

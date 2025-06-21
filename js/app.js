@@ -22,7 +22,7 @@ export class Application {
         this.apiKey = apiKey;
         this.servers = [];
         this.resultHistory = [];
-        this.focus = { "id": "none" };
+        this.focus = { "message": "this data wasn't ready or something truly unexpected happened" };
         this.initialized = false;
     }
     setUserData(email, key, url) {
@@ -73,6 +73,10 @@ export class Application {
         };
 
         try {
+            if (logData.message === "") {
+                this.errors.push("Log message is empty. Cannot send log.");
+                return;
+            }
             const response = await fetch(thisURL, {
                 method: 'POST',
                 headers: {
@@ -166,6 +170,10 @@ export class Application {
         this.user = data;
     }
     async fetchDetails(id) {
+        if (!id) {
+            this.errors.push("No ID provided for fetching details.");
+            return;
+        }
         let thisURL = this.apiUrl + `events/${id}`
         let response = await fetch(thisURL, {
             method: 'GET',
@@ -174,6 +182,10 @@ export class Application {
                 'Authorization': `${this.user.email}:${this.user.key}`
             }
         });
+        if (!response.ok) {
+            this.errors.push(`Error fetching details for ID ${id}: ${response.statusText}`);
+            return;
+        }
         let data = await response.json();
         this.focus = data;
     }
