@@ -75,7 +75,15 @@ async function updateUI() {
         if (application.results.length > 0 && JSON.stringify(application.results) !== JSON.stringify(previousResults)) {
             previousResults = [...application.results];
             matchBox.innerHTML = ""; // Clear previous content
-
+            application.results.sort((a, b) => {
+                if (a.matched && !b.matched) {
+                    return -1; // a comes first if matched, b is not matched
+                }
+                if (!a.matched && b.matched) {
+                    return 1; // b comes first if matched, a is not matched
+                }
+                return 0;
+            });
             for (let result of application.results) {
                 const uniq = `details-${result.link}`;
 
@@ -134,7 +142,7 @@ async function updateUI() {
                         await application.fetchDetails(thisLink);
                         const newTab = window.open();
                         const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
-                        newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
+                        newTab.document.body.innerHTML = `<pre style="font-size: 1.2em;">${escapedJson}</pre>`;
                         // console.error("Invalid link:", thisLink);
                     } catch (error) {
                         application.errors.push(error);
@@ -274,7 +282,7 @@ historyButton.addEventListener("click", (e) => {
                 await application.fetchDetails(thisLink);
                 const newTab = window.open();
                 const escapedJson = escapeHtml(JSON.stringify(application.focus, null, 2));
-                newTab.document.body.innerHTML = `<pre>${escapedJson}</pre>`;
+                newTab.document.body.innerHTML = `<pre style="font-size: 1.2em;">${escapedJson}</pre>`;
 
             } catch (error) {
                 application.errors.push(error);
