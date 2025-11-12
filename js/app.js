@@ -167,6 +167,7 @@ export class Application {
             }
         });
         let data = await response.json();
+        data.key = this.user.key; // Preserve existing key
         this.user = data;
     }
     async fetchDetails(id) {
@@ -200,6 +201,7 @@ export class Application {
             body: JSON.stringify(user)
         });
         let data = await response.json();
+        data.key = this.user.key; // Preserve existing key
         this.user = data;
     }
     async fetchMatches(to, matches, type) {
@@ -288,21 +290,41 @@ export class Application {
             this.errors.push(`Error saving history: ${err}`);
         }
     }
-    async saveResultsToCSV(includeHisotry) {
+
+    /**
+     * Clears the in-memory history and removes it from chrome storage.
+     */
+    clearHistory() {
+        this.resultHistory = [];
+        try {
+            chrome.storage.local.remove("history", () => {
+                console.log("History cleared from storage.");
+            });
+        } catch (err) {
+            this.errors.push(`Error clearing history: ${err}`);
+        }
+    }
+
+    /**
+     * Saves *only* the result history to a CSV file.
+     */
+    async saveHistoryToCSV() {
         let rightFreakinNow = new Date();
-        const filename = `results-${rightFreakinNow.getFullYear()}-${rightFreakinNow.getMonth() + 1}-${rightFreakinNow.getDate()}.csv`;
+        const filename = `history-${rightFreakinNow.getFullYear()}-${rightFreakinNow.getMonth() + 1}-${rightFreakinNow.getDate()}.csv`;
         let csvContent = "data:text/csv;charset=utf-8,";
         let header = `server-id,local-id,value,from,matched,info\n`;
         csvContent += header;
-        let data = this.results;
-        if (includeHisotry) {
-            data.push(...this.resultHistory);
+        let data = this.resultHistory; // Only history
+        
+        if (data.length === 0) {
+            this.errors.push("History is empty. Nothing to save.");
+            return;
         }
+
         data.forEach((result) => {
-            if (result.info.includes(",")) {
-                result.info = result.info.replaceAll(",", " - ");
-            }
-            let row = `${result.link},${result.id},${result.value},${result.from},${result.matched},${result.info}\n`;
+            // Ensure properties exist and handle commas in 'info'
+            let info = result.info ? result.info.toString().replace(/,/g, " - ") : "";
+            let row = `${result.link || 'N/A'},${result.id || 'N/A'},${result.value || 'N/A'},${result.from || 'N/A'},${result.matched || 'false'},${info}\n`;
             csvContent += row;
         });
         let encodedUri = encodeURI(csvContent);
@@ -311,6 +333,39 @@ export class Application {
         link.setAttribute("download", filename);
         document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link); // Clean up the link
+    }
+
+    async saveResultsToCSV(includeHistory) { // Corrected parameter name
+        let rightFreakinNow = new Date();
+        const filename = `results-${rightFreakinNow.getFullYear()}-${rightFreakinNow.getMonth() + 1}-${rightFreakinNow.getDate()}.csv`;
+        let csvContent = "data:text/csv;charset=utf-8,";
+        let header = `server-id,local-id,value,from,matched,info\n`;
+        csvContent += header;
+        
+        let data = [...this.results]; // Start with current results
+        if (includeHistory) {
+            data.push(...this.resultHistory);
+        }
+
+        if (data.length === 0) {
+            this.errors.push("No data to save.");
+            return;
+        }
+
+        data.forEach((result) => {
+            // Ensure properties exist and handle commas in 'info'
+            let info = result.info ? result.info.toString().replace(/,/g, " - ") : "";
+            let row = `${result.link || 'N/A'},${result.id || 'N/A'},${result.value || 'N/A'},${result.from || 'N/A'},${result.matched || 'false'},${info}\n`;
+            csvContent += row;
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up the link
     }
     fetchHistory() {
         try {

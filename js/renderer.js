@@ -119,7 +119,7 @@ async function updateUI() {
                 function addMessageBodyParagraph(text, value) {
                     const paragraph = document.createElement('p');
                     paragraph.className = 'has-text-white';
-                    paragraph.innerHTML = `${escapeHtml(text)}: <span class="has-text-white">${escapeHtml(value)}</span>`;
+                    paragraph.innerHTML = `${escapeHtml(text)}: <span class="has-text-white">${escapeHtml(String(value))}</span>`; // Ensure value is a string
                     body.appendChild(paragraph);
                 }
 
@@ -151,15 +151,15 @@ async function updateUI() {
                 });
             }
 
-            // Create download button
+            // Create download button for *current results only*
             const downloadButton = document.createElement('button');
             downloadButton.className = 'button is-primary';
-            downloadButton.id = 'downloadResultsButton';
-            downloadButton.textContent = 'download';
+            downloadButton.id = 'downloadCurrentResultsButton';
+            downloadButton.textContent = 'download'; // Changed text
             matchBox.appendChild(downloadButton);
 
             downloadButton.addEventListener("click", () => {
-                application.saveResultsToCSV(true);
+                application.saveResultsToCSV(false); // Changed to false
             });
         }
     } catch (error) {
@@ -219,7 +219,47 @@ historyButton.addEventListener("click", (e) => {
     mainSection.style.display = "block";
     profileView.style.display = "none";
     serviceView.style.display = "none";
-    matchBox.innerHTML = `<p class="has-text-info">application history is ${application.resultHistory.length}</p>`;
+    matchBox.innerHTML = ""; // Clear the box first
+
+    // --- Add History Buttons ---
+    const historyButtonsContainer = document.createElement('div');
+    historyButtonsContainer.className = 'buttons mb-4'; // Add some margin
+
+    // Create download history button
+    const downloadHistoryButton = document.createElement('button');
+    downloadHistoryButton.className = 'button is-primary is-outlined';
+    downloadHistoryButton.id = 'downloadHistoryButton';
+    downloadHistoryButton.textContent = 'Download History';
+    downloadHistoryButton.addEventListener("click", () => {
+        application.saveHistoryToCSV(); // Call new function
+    });
+
+    // Create clear history button
+    const clearHistoryButton = document.createElement('button');
+    clearHistoryButton.className = 'button is-danger is-outlined';
+    clearHistoryButton.id = 'clearHistoryButton';
+    clearHistoryButton.textContent = 'Clear History';
+    clearHistoryButton.addEventListener("click", () => {
+        // You could add a custom confirmation modal here
+        application.clearHistory();
+        matchBox.innerHTML = ""; // Clear UI
+        matchBox.appendChild(historyButtonsContainer); // Re-add buttons
+        const historyInfo = document.createElement('p');
+        historyInfo.className = 'has-text-info';
+        historyInfo.textContent = 'History has been cleared.';
+        matchBox.appendChild(historyInfo);
+    });
+
+    historyButtonsContainer.appendChild(downloadHistoryButton);
+    historyButtonsContainer.appendChild(clearHistoryButton);
+    // --- End History Buttons ---
+
+
+    // Add history info text
+    const historyInfo = document.createElement('p');
+    historyInfo.className = 'has-text-info mb-4'; // Add margin
+    historyInfo.textContent = `Application history items: ${application.resultHistory.length}`;
+    matchBox.appendChild(historyInfo);
 
     for (let result of application.resultHistory) {
         const uniq = `details-${result.link}`;
@@ -255,7 +295,7 @@ historyButton.addEventListener("click", (e) => {
         function addMessageBodyParagraph(text, value) {
             const paragraph = document.createElement('p');
             paragraph.className = 'has-text-white';
-            paragraph.innerHTML = `${escapeHtml(text)}: <span class="has-text-white">${escapeHtml(value)}</span>`;
+            paragraph.innerHTML = `${escapeHtml(text)}: <span class="has-text-white">${escapeHtml(String(value))}</span>`; // Ensure value is a string
             body.appendChild(paragraph);
         }
 
@@ -264,7 +304,7 @@ historyButton.addEventListener("click", (e) => {
         addMessageBodyParagraph('attr_count', String(result.attr_count));
         addMessageBodyParagraph('threat_level_id', String(result.threat_level_id));
         addMessageBodyParagraph('info', result.info);
-        addMessageBodyParagraph('info', result.link);
+        addMessageBodyParagraph('link', result.link); // Changed label
 
         article.appendChild(header);
         article.appendChild(body);
@@ -289,17 +329,9 @@ historyButton.addEventListener("click", (e) => {
             }
         });
     }
+    matchBox.appendChild(historyButtonsContainer);
 
-    // Create download button
-    const downloadButton = document.createElement('button');
-    downloadButton.className = 'button is-primary';
-    downloadButton.id = 'downloadResultsButton';
-    downloadButton.textContent = 'download';
-    matchBox.appendChild(downloadButton);
-
-    downloadButton.addEventListener("click", () => {
-        application.saveResultsToCSV(true);
-    });
+    // Removed the old download button that saved everything
 });
 
 function isValidUrl(string) {
@@ -313,6 +345,8 @@ function isValidUrl(string) {
 
 searchButton.addEventListener("click", async (event) => {
     event.preventDefault();
+    application.results = []; // Clear previous search results
+    previousResults = []; // Clear comparison array
     matchBox.innerHTML = "<p>parsed text...searching...</p>";
     matchBox.innerHTML += `<progress class="progress is-primary" max="100"></progress>`
     const allMatches = [];
@@ -367,14 +401,17 @@ menuServices.addEventListener("click", async (e) => {
 
 
     const cardList = document.getElementById('cardList');
+    cardList.innerHTML = ""; // Clear list before repopulating
     application.servers.forEach(data => {
         data.checked = false;
         try {
-            application.user.services.forEach(s => {
-                if (s.kind === data.kind) {
-                    data.checked = true;
-                }
-            });
+            if (application.user.services) { // Check if services array exists
+                application.user.services.forEach(s => {
+                    if (s.kind === data.kind) {
+                        data.checked = true;
+                    }
+                });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -508,6 +545,17 @@ goToButton.addEventListener("click", async (e) => {
     });
 });
 function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        if (unsafe === null || unsafe === undefined) {
+            return '';
+        }
+        try {
+            unsafe = String(unsafe);
+        } catch (e) {
+            console.error('Could not convert value to string for HTML escaping', unsafe);
+            return '';
+        }
+    }
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
